@@ -1,0 +1,12 @@
+{
+    "schemaVersion": 1,
+    "generator": "local-repo-wiki-collection",
+    "title": "RepoAtlas documentation",
+    "language": "English",
+    "audiences": [
+        {
+            "id": "end-users",
+            "title": "End users"
+        }
+    ]
+}

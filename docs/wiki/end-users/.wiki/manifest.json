@@ -1,0 +1,116 @@
+{
+    "schemaVersion": 1,
+    "generator": "local-repo-wiki",
+    "status": "complete",
+    "generatedAt": "2026-10-06T14:47:24Z",
+    "repository": {
+        "name": "RepoAtlas",
+        "relativeRoot": "../../..",
+        "revision": "867d457d28fa743a55ce4f1a3509d921265a6857",
+        "workingTree": "modified"
+    },
+    "scope": {
+        "language": "English",
+        "audience": "end users",
+        "depth": "standard",
+        "include": [
+            "first use",
+            "request settings",
+            "audience guides and updates",
+            "validation and recovery",
+            "local HTML reading"
+        ],
+        "exclude": [
+            "contributor implementation details",
+            ".git",
+            "dependencies and build products",
+            "generated wiki collection",
+            "secrets",
+            "remote research"
+        ]
+    },
+    "pages": [
+        {
+            "path": "README.md",
+            "title": "RepoAtlas for end users",
+            "kind": "home",
+            "status": "complete",
+            "sources": [
+                "README.md",
+                "prompts/repo-wiki.md",
+                "scripts/Test-RepoWiki.ps1",
+                "scripts/Test-RepoWikiDiagrams.ps1",
+                "scripts/Export-RepoWikiHtml.ps1"
+            ]
+        },
+        {
+            "path": "getting-started.md",
+            "title": "Generate your first wiki",
+            "kind": "topic",
+            "status": "complete",
+            "sources": [
+                "README.md",
+                "prompts/repo-wiki.md"
+            ]
+        },
+        {
+            "path": "manage-guides.md",
+            "title": "Choose settings and maintain guides",
+            "kind": "topic",
+            "status": "complete",
+            "sources": [
+                "README.md",
+                "prompts/repo-wiki.md",
+                "scripts/Test-RepoWiki.ps1"
+            ]
+        },
+        {
+            "path": "validation-and-recovery.md",
+            "title": "Check results and resolve problems",
+            "kind": "topic",
+            "status": "complete",
+            "sources": [
+                "README.md",
+                "prompts/repo-wiki.md",
+                "scripts/Test-RepoWiki.ps1",
+                "scripts/Test-RepoWikiDiagrams.ps1",
+                "tests/Test-Validator.ps1"
+            ]
+        },
+        {
+            "path": "browser-export.md",
+            "title": "Read a wiki in your browser",
+            "kind": "topic",
+            "status": "complete",
+            "sources": [
+                "README.md",
+                "scripts/Export-RepoWikiHtml.ps1",
+                "templates/html/page.html",
+                "templates/html/wiki.js",
+                "tests/Test-Validator.ps1"
+            ]
+        }
+    ],
+    "limitations": [
+        "Illustrative generation/update requests and commands with example repository paths were not executed as separate workflows.",
+        "Integration-test definitions were reviewed, but the integration suite and HTML export were not run for this documentation change.",
+        "The guide contains no Mermaid diagrams. The optional checker found no blocks and invoked no renderer; mmdc was unavailable on PATH, so real Mermaid rendering was not verified.",
+        "Coverage is limited to end-user generation, settings, audience maintenance, validation/recovery, and local browser reading; implementation extension and model/renderer installation are excluded."
+    ],
+    "remainingWork": [],
+    "validation": {
+        "status": "passed",
+        "checks": [
+            "Factual review: audited all five pages against the on-disk generation instructions, validator completion/navigation branches, exporter path/ownership/rendering/search/replacement branches, HTML reader labels and handlers, and relevant integration-test definitions.",
+            "Selected-guide structural validation: Test-RepoWiki.ps1 with explicit WikiPath docs/wiki/end-users and RepoRoot the local repository; checks metadata, page coverage, local links, home/parent navigation, source dependencies, and citation bounds.",
+            "Collection structural validation: Test-RepoWiki.ps1 with explicit WikiPath docs/wiki and RepoRoot the local repository; checks registry, general index, and the registered end-users guide separately from factual review.",
+            "Optional diagram scan: Test-RepoWikiDiagrams.ps1 with explicit WikiPath docs/wiki/end-users and MermaidCliPath mmdc; exit 0, No Mermaid diagrams found; no renderer invoked."
+        ],
+        "notes": [
+            "Checks used local PowerShell 7.6.6. No network requests, package installations, or source-code changes were made.",
+            "Two out-of-bounds draft citation endpoints were repaired and the selected-guide check rerun successfully before completion.",
+            "The initial working tree was clean. Final git status lists only the nine generated collection files; the source revision remains 867d457d28fa743a55ce4f1a3509d921265a6857.",
+            "Structural validation does not establish factual correctness, validate Mermaid syntax, or verify heading fragments. Diagram availability and factual review are recorded separately."
+        ]
+    }
+}
