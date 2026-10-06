@@ -1,0 +1,410 @@
+:root {
+    color-scheme: light;
+    --ink: #22292c;
+    --muted: #59666b;
+    --line: #dce2e4;
+    --surface: #f4f6f7;
+    --accent: #166557;
+    --selected: #e4f1ec;
+    --source: #994634;
+    font-family: Candara, "Trebuchet MS", sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    letter-spacing: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+}
+
+a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+}
+
+a:hover {
+    text-decoration-thickness: 2px;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+:focus-visible {
+    outline: 3px solid #b56232;
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.skip-link {
+    position: fixed;
+    left: 1rem;
+    top: -6rem;
+    z-index: 4;
+    padding: .6rem 1rem;
+    background: #fff;
+}
+
+.skip-link:focus {
+    top: 1rem;
+}
+
+.topbar {
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .7rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+}
+
+.project-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr) 210px;
+    max-width: 1520px;
+    margin: auto;
+}
+
+.sidebar {
+    border-right: 1px solid var(--line);
+    padding: 1.6rem 1rem;
+    min-width: 0;
+}
+
+.contents h2,
+.outline h2 {
+    font-size: .8rem;
+    font-weight: 700;
+    margin: 0 0 .7rem;
+    color: var(--muted);
+}
+
+.contents ul,
+.outline ul,
+#search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.contents a {
+    display: block;
+    padding: .45rem .7rem;
+    line-height: 1.4;
+    text-decoration: none;
+    color: var(--ink);
+    border-left: 3px solid transparent;
+}
+
+.contents a:hover {
+    background: var(--surface);
+}
+
+.contents a[aria-current="page"] {
+    border-left-color: var(--accent);
+    background: var(--selected);
+    font-weight: 700;
+}
+
+.contents .nested a {
+    padding-left: 1.4rem;
+    font-size: .92rem;
+}
+
+.contents .section a {
+    margin-top: .65rem;
+    font-weight: 700;
+}
+
+.search {
+    margin-bottom: 1.5rem;
+}
+
+.search label {
+    display: block;
+    font-size: .85rem;
+    font-weight: 700;
+    margin-bottom: .35rem;
+}
+
+.search input {
+    width: 100%;
+    min-width: 0;
+    padding: .55rem .65rem;
+    border: 1px solid #abb8bd;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.search-status {
+    color: var(--muted);
+    font-size: .85rem;
+    margin: 0 0 .6rem;
+}
+
+#search-results li {
+    margin-bottom: 1rem;
+}
+
+#search-results a {
+    display: block;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+#search-results p {
+    font-size: .85rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: .3rem 0 0;
+    overflow-wrap: anywhere;
+}
+
+main {
+    min-width: 0;
+    padding: 1.8rem 2.5rem 4rem;
+}
+
+.breadcrumbs {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: 1.1rem;
+}
+
+.breadcrumbs a+a {
+    margin-left: 1rem;
+}
+
+article {
+    max-width: 830px;
+}
+
+article h1,
+article h2,
+article h3 {
+    font-family: Georgia, "Palatino Linotype", serif;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+article h1 {
+    font-size: 2.1rem;
+    margin: 0 0 1.25rem;
+}
+
+article h2 {
+    font-size: 1.4rem;
+    margin: 2.1rem 0 .8rem;
+    padding-bottom: .45rem;
+    border-bottom: 1px solid var(--line);
+}
+
+article h3 {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+}
+
+article p,
+article li {
+    overflow-wrap: anywhere;
+}
+
+article blockquote {
+    margin: 1.3rem 0;
+    padding: .1rem 1rem;
+    border-left: 3px solid var(--source);
+    background: #faf6f4;
+    color: #613e35;
+}
+
+article table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 1.4rem 0;
+    font-size: .92rem;
+}
+
+article th,
+article td {
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid var(--line);
+    padding: .5rem .75rem;
+}
+
+article th {
+    background: var(--surface);
+    font-weight: 700;
+}
+
+article code {
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: .87em;
+    background: var(--surface);
+    border-radius: 3px;
+    padding: .1rem .25rem;
+}
+
+article pre {
+    overflow: auto;
+    background: #f1f4f5;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    line-height: 1.55;
+}
+
+article pre code {
+    padding: 0;
+    background: transparent;
+    font-size: .82rem;
+}
+
+article img {
+    max-width: 100%;
+    height: auto;
+}
+
+.diagram {
+    margin: 1.5rem 0;
+}
+
+.diagram summary {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.outline {
+    padding: 2rem 1rem;
+    min-width: 0;
+}
+
+.outline a {
+    display: block;
+    font-size: .83rem;
+    color: var(--muted);
+    text-decoration: none;
+    line-height: 1.45;
+    padding: .3rem 0;
+}
+
+.outline .subheading {
+    padding-left: .7rem;
+}
+
+.menu-toggle {
+    display: none;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: .4rem .7rem;
+    border-radius: 4px;
+}
+
+@media (max-width: 1120px) {
+    .workspace {
+        grid-template-columns: 240px minmax(0, 1fr);
+    }
+
+    .outline {
+        display: none;
+    }
+
+    main {
+        padding: 1.5rem 2rem 3rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .topbar {
+        min-height: 60px;
+        padding: .7rem 1rem;
+    }
+
+    .project-name {
+        font-size: 1rem;
+    }
+
+    .workspace {
+        display: block;
+    }
+
+    .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 1rem;
+    }
+
+    .js .menu-toggle {
+        display: block;
+        flex-shrink: 0;
+    }
+
+    .js .sidebar {
+        display: none;
+    }
+
+    .js .sidebar.is-open {
+        display: block;
+    }
+
+    main {
+        padding: 1.4rem 1rem 3rem;
+    }
+
+    article h1 {
+        font-size: 1.7rem;
+    }
+
+    article h2 {
+        font-size: 1.25rem;
+    }
+}
+
+@media print {
+
+    .sidebar,
+    .outline,
+    .topbar,
+    .breadcrumbs {
+        display: none;
+    }
+
+    .workspace {
+        display: block;
+    }
+
+    main {
+        padding: 0;
+    }
+
+    article {
+        max-width: none;
+    }
+
+    article pre {
+        white-space: pre-wrap;
+    }
+}

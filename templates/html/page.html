@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="{{language}}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>{{page_title}} | {{project_title}}</title>
+    <link rel="stylesheet" href="{{styles_href}}">
+    <script defer src="{{search_href}}"></script>
+    <script defer src="{{script_href}}"></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="topbar">
+        <a class="project-name" id="wiki-home" href="{{home_href}}">{{project_title}}</a>
+        <button class="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+    </header>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <form class="search" role="search" hidden>
+                <label for="wiki-search">Search this wiki</label>
+                <input id="wiki-search" type="search" autocomplete="off" placeholder="Search pages and content">
+            </form>
+            <section class="search-results" aria-label="Search results" hidden>
+                <p class="search-status" role="status" aria-live="polite"></p>
+                <ul id="search-results"></ul>
+            </section>
+            <nav class="contents" aria-label="Contents">
+                <h2>Contents</h2>
+                {{navigation}}
+            </nav>
+        </aside>
+        <main id="content" tabindex="-1">
+            <nav class="breadcrumbs" aria-label="Page navigation">{{breadcrumbs}}</nav>
+            <article>{{content}}</article>
+        </main>
+        <aside class="outline" aria-label="On this page">{{outline}}</aside>
+    </div>
+</body>
+
+</html>
