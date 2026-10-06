@@ -1,5 +1,4 @@
-# Local Repo Wiki
-
+# RepoAtlas
 Turn an open local repository into an evidence-based, navigable Markdown wiki using your existing AI coding assistant. No service, API integration, database, package installation, or build step is needed.
 
 ## Use it
