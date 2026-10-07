@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="English">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Check results and resolve problems | RepoAtlas</title>
+    <link rel="stylesheet" href="../assets/wiki.css">
+    <script defer src="../assets/search-end-users.js"></script>
+    <script defer src="../assets/wiki.js"></script>
+    
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="topbar">
+        <a class="project-name" id="wiki-home" href="index.html">RepoAtlas</a>
+        <button class="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+    </header>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <form class="search" role="search" hidden>
+                <label for="wiki-search">Search this wiki</label>
+                <input id="wiki-search" type="search" autocomplete="off" placeholder="Search pages and content">
+            </form>
+            <section class="search-results" aria-label="Search results" hidden>
+                <p class="search-status" role="status" aria-live="polite"></p>
+                <ul id="search-results"></ul>
+            </section>
+            <nav class="contents" aria-label="Contents">
+                <h2>Contents</h2>
+                <ul><li class=""><a href="../index.html">All audiences</a></li><li class="nested"><a href="index.html">RepoAtlas for end users</a></li><li class="nested"><a href="getting-started.html">Generate your first wiki</a></li><li class="nested"><a href="manage-guides.html">Choose settings and maintain guides</a></li><li class="nested"><a href="validation-and-recovery.html" aria-current="page">Check results and resolve problems</a></li><li class="nested"><a href="browser-export.html">Read a wiki in your browser</a></li></ul>
+            </nav>
+        </aside>
+        <main id="content" tabindex="-1">
+            <nav class="breadcrumbs" aria-label="Page navigation"><a href="../index.html">All audiences</a><a href="index.html">Home</a></nav>
+            <article><h1 id="check-results-and-resolve-problems">Check results and resolve problems</h1>
+<p><a href="index.html">Home</a> | <a href="index.html">Parent</a></p>
+<p>Use this page before relying on a generated wiki or exporting it. Factual review, structural validation, and diagram rendering answer different questions; a successful check is not proof that the assistant's explanations are correct. Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Phase 4; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:1-8</a>.</p>
+<h2 id="review-content-and-completion">Review content and completion</h2>
+<ol>
+<li>Read the selected guide's home for its audience, source snapshot, scope, and gaps.</li>
+<li>Ask the assistant to audit significant claims against deciding code branches, not just verify that cited files exist. This includes settings, defaults, outputs, errors, and diagrams where present.</li>
+<li>Inspect the selected guide's <code>.wiki/manifest.json</code>: generation and page statuses should be <code>complete</code>, <code>remainingWork</code> should be empty, and validation should be <code>passed</code> before it is called finished.</li>
+<li>Keep any honest limitations visible. A complete scoped guide need not claim that every subsystem, sample command, or optional renderer was checked.</li>
+</ol>
+<p>Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Phase 4 and manifest contract; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:149-175</a>, consistency checks.</p>
+<h2 id="run-structural-validation">Run structural validation</h2>
+<p>Requires PowerShell 7 or later and <code>pwsh</code> available as a command. Replace the example paths with your toolkit, generated guide, and documented repository. This command is an unverified example for another repository; this guide's own validation is recorded in its manifest.</p>
+<pre><code class="language-powershell">pwsh -NoProfile -File &quot;C:/Tools/LocalRepoWiki/scripts/Test-RepoWiki.ps1&quot; `
+  -WikiPath &quot;C:/Code/MyProject/docs/wiki/end-users&quot; `
+  -RepoRoot &quot;C:/Code/MyProject&quot;
+</code></pre>
+<p><code>RepoRoot</code> is the repository being documented, not necessarily the toolkit folder. Pass the audience folder to check only that guide. To check the general index and every registered guide, run the same command with <code>-WikiPath &quot;C:/Code/MyProject/docs/wiki&quot;</code>. Source: <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:1-13</a>, parameters; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:63-130</a>, collection dispatch.</p>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Meaning</th>
+<th>Next action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exit <code>0</code>, <code>Validation passed</code></td>
+<td>The implemented structure/reference checks passed</td>
+<td>Review warnings and content; confirm completion separately</td>
+</tr>
+<tr>
+<td>Exit <code>1</code>, <code>FAIL:</code> messages</td>
+<td>Input, metadata, page, navigation, or reference problems were found</td>
+<td>Repair reported problems and rerun the same check</td>
+</tr>
+<tr>
+<td>Warnings about unfinished generation or missing planned pages</td>
+<td>An unfinished guide may still pass structurally</td>
+<td>Resume its recorded work; do not label it complete yet</td>
+</tr>
+<tr>
+<td>Warning about an external URL or heading fragment</td>
+<td>That target was not checked offline</td>
+<td>Treat it as unverified; prefer portable local file links</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:149-175</a>, completion warnings; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:200-264</a>, link checks and exit handling.</p>
+<p>The script writes no files. It checks metadata, listed-page coverage, one H1 per page, unresolved template markers, home/parent navigation, local destinations, cited-source dependencies, and explicit citation line bounds. It does not verify factual claims, source-line meaning, Mermaid syntax, or heading-fragment validity, and it is designed for the prompt's simple Markdown conventions. Sources: <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:132-264</a>, individual-guide checks; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:1-8</a>, scope.</p>
+<h2 id="repair-common-failures">Repair common failures</h2>
+<table>
+<thead>
+<tr>
+<th>Report or symptom</th>
+<th>Recovery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Missing <code>.wiki/manifest.json</code></td>
+<td>Confirm you selected a generated audience folder or legacy wiki, not an arbitrary docs folder; ask the assistant to inspect existing content before replacing it</td>
+</tr>
+<tr>
+<td><code>repository.relativeRoot does not resolve to RepoRoot</code></td>
+<td>Confirm the documented repository path and ask the assistant to recalculate metadata from the audience directory</td>
+</tr>
+<tr>
+<td>Missing link target or invalid line range</td>
+<td>Ask for the affected page and source to be reread; refresh the link or citation based on actual evidence</td>
+</tr>
+<tr>
+<td>Page absent from manifest or home contents</td>
+<td>Ask the assistant to reconcile the page plan, metadata, and contents without deleting unfamiliar/manual pages</td>
+</tr>
+<tr>
+<td>Missing home, parent, or general-index link</td>
+<td>Restore audience-local home/parent navigation and the registered home page's <code>All audiences</code> link</td>
+</tr>
+<tr>
+<td>Invalid/duplicate audience ID or linked audience directory</td>
+<td>Use a unique lowercase kebab-case ID and a real direct child directory, not a symbolic link or junction</td>
+</tr>
+<tr>
+<td>Both registry and single-wiki manifest at the root</td>
+<td>Stop and resolve the intended layout; authorize a migration if needed rather than mixing contracts</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:65-130</a>, collection rules; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:132-253</a>, manifest and navigation checks; <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, preservation and migration requirements.</p>
+<p>Collection failures identify the affected audience. Check your selected guide separately when another guide is incomplete or broken; unrelated guide failures should not be recorded as unfinished work for your guide. Combined export still requires all registered guides to be complete. Sources: <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:74-91</a>, child-result handling; <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Phase 4 collection validation.</p>
+<h2 id="optional-diagram-checks">Optional diagram checks</h2>
+<p>If the wiki contains Mermaid diagrams, use a trusted, already-installed local Mermaid CLI with a working browser runtime. Nothing is installed by the checker. This is an unexecuted example for a wiki containing diagrams:</p>
+<pre><code class="language-powershell">pwsh -NoProfile -File &quot;C:/Tools/LocalRepoWiki/scripts/Test-RepoWikiDiagrams.ps1&quot; `
+  -WikiPath &quot;C:/Code/MyProject/docs/wiki/end-users&quot; `
+  -MermaidCliPath &quot;mmdc&quot;
+</code></pre>
+<p>Sources: <a href="../../../README.md">README.md</a>, local renderer prerequisites; <a href="../../../scripts/Test-RepoWikiDiagrams.ps1">scripts/Test-RepoWikiDiagrams.ps1:1-14</a>, requirements and parameters; <a href="../../../scripts/Test-RepoWikiDiagrams.ps1">scripts/Test-RepoWikiDiagrams.ps1:84-114</a>, CLI resolution and invocation.</p>
+<table>
+<thead>
+<tr>
+<th>Exit</th>
+<th>Meaning</th>
+<th>Recovery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>Diagrams rendered, or no Mermaid blocks were found</td>
+<td>Read the actual message; no diagrams means no renderer ran</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>Bad input, malformed fences, rendering errors, or missing/empty SVG output</td>
+<td>Ask the assistant to repair the diagram or retain an accurate prose explanation and outstanding work</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>CLI unavailable and diagrams were not rendered</td>
+<td>Record the unavailable check; keep the prose fallback</td>
+</tr>
+</tbody>
+</table>
+<p>The checker scans Markdown recursively, ignores root <code>.wiki</code> metadata, and skips diagram-like text inside examples and HTML comments. Use ordinary top-level fenced diagrams rather than list- or blockquote-nested fences. It renders temporary SVGs and removes the temporary files, leaving the wiki pages unchanged. Rendering does not verify factual relationships or guarantee compatibility with another viewer. Source: <a href="../../../scripts/Test-RepoWikiDiagrams.ps1">scripts/Test-RepoWikiDiagrams.ps1:24-129</a>, extraction, rendering, cleanup, and results.</p>
+<h2 id="what-the-repository-tests-establish">What the repository tests establish</h2>
+<p>The integration tests include broken collection links and IDs, source-link preservation during export, unchanged input Markdown, unknown/edited export-file rejection, and preservation of an existing export when rendering or completion checks fail. These are specific tested cases, not a guarantee about all inputs. The test source was reviewed for this guide; the integration suite was not rerun for this documentation change. Source: <a href="../../../tests/Test-Validator.ps1">tests/Test-Validator.ps1:232-313</a>, single-guide export cases; <a href="../../../tests/Test-Validator.ps1">tests/Test-Validator.ps1:405-454</a>, collection cases.</p>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="manage-guides.html">Choose settings and maintain guides</a></li>
+<li><a href="browser-export.html">Read a wiki in your browser</a></li>
+</ul>
+</article>
+        </main>
+        <aside class="outline" aria-label="On this page"><h2>On this page</h2><ul><li class=""><a href="#review-content-and-completion">Review content and completion</a></li><li class=""><a href="#run-structural-validation">Run structural validation</a></li><li class=""><a href="#repair-common-failures">Repair common failures</a></li><li class=""><a href="#optional-diagram-checks">Optional diagram checks</a></li><li class=""><a href="#what-the-repository-tests-establish">What the repository tests establish</a></li><li class=""><a href="#related-pages">Related pages</a></li></ul></aside>
+    </div>
+</body>
+
+</html>

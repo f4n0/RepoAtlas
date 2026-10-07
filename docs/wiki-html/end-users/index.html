@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="English">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>RepoAtlas for end users | RepoAtlas</title>
+    <link rel="stylesheet" href="../assets/wiki.css">
+    <script defer src="../assets/search-end-users.js"></script>
+    <script defer src="../assets/wiki.js"></script>
+    
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="topbar">
+        <a class="project-name" id="wiki-home" href="index.html">RepoAtlas</a>
+        <button class="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+    </header>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <form class="search" role="search" hidden>
+                <label for="wiki-search">Search this wiki</label>
+                <input id="wiki-search" type="search" autocomplete="off" placeholder="Search pages and content">
+            </form>
+            <section class="search-results" aria-label="Search results" hidden>
+                <p class="search-status" role="status" aria-live="polite"></p>
+                <ul id="search-results"></ul>
+            </section>
+            <nav class="contents" aria-label="Contents">
+                <h2>Contents</h2>
+                <ul><li class=""><a href="../index.html">All audiences</a></li><li class="nested"><a href="index.html" aria-current="page">RepoAtlas for end users</a></li><li class="nested"><a href="getting-started.html">Generate your first wiki</a></li><li class="nested"><a href="manage-guides.html">Choose settings and maintain guides</a></li><li class="nested"><a href="validation-and-recovery.html">Check results and resolve problems</a></li><li class="nested"><a href="browser-export.html">Read a wiki in your browser</a></li></ul>
+            </nav>
+        </aside>
+        <main id="content" tabindex="-1">
+            <nav class="breadcrumbs" aria-label="Page navigation"><a href="../index.html">All audiences</a><a href="index.html">Home</a></nav>
+            <article><h1 id="repoatlas-for-end-users">RepoAtlas for end users</h1>
+<p><a href="../index.html">All audiences</a></p>
+<p>RepoAtlas supplies portable instructions for an AI coding assistant to research a local repository and write a navigable Markdown wiki. It also supplies optional local PowerShell tools for validation, diagram checks, and HTML export. The instructions do not configure or run the assistant's model. Sources: <a href="../../../README.md">README.md</a>, <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>.</p>
+<h2 id="scope-and-snapshot">Scope and snapshot</h2>
+<p>This English, standard-depth guide is for people using the toolkit, not extending its scripts. It covers first use, settings and audience guides, updates, checking results, and browser reading. It documents local commit <code>867d457d28fa743a55ce4f1a3509d921265a6857</code>; the working tree was clean before generation and is now modified only by this documentation collection.</p>
+<h2 id="choose-your-task">Choose your task</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Read next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use the toolkit for the first time</td>
+<td><a href="getting-started.html">Generate your first wiki</a></td>
+</tr>
+<tr>
+<td>Change language, scope, or audience; add or update a guide</td>
+<td><a href="manage-guides.html">Choose settings and maintain guides</a></td>
+</tr>
+<tr>
+<td>Check completion, repair references, or handle diagrams</td>
+<td><a href="validation-and-recovery.html">Check results and resolve problems</a></td>
+</tr>
+<tr>
+<td>Export, search, or refresh an HTML copy</td>
+<td><a href="browser-export.html">Read a wiki in your browser</a></td>
+</tr>
+</tbody>
+</table>
+<p>For a first run, follow these pages in order: generation, settings as needed, validation, then optional browser export. All topic pages are listed above.</p>
+<h2 id="what-performs-each-task">What performs each task</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>What you use</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Research and writing</td>
+<td>The generation instructions with your local-file-capable assistant</td>
+<td>An audience guide, source citations, and progress metadata</td>
+</tr>
+<tr>
+<td>Structure checking</td>
+<td><code>Test-RepoWiki.ps1</code> with explicit wiki and repository paths</td>
+<td>A read-only report of structure and reference problems</td>
+</tr>
+<tr>
+<td>Optional diagram checking</td>
+<td><code>Test-RepoWikiDiagrams.ps1</code> with a trusted, already-installed Mermaid CLI</td>
+<td>A render-check result, separate from factual review</td>
+</tr>
+<tr>
+<td>Browser reading</td>
+<td><code>Export-RepoWikiHtml.ps1</code> on a completed guide or collection</td>
+<td>A separate HTML copy with local navigation and search</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md:1-19</a>, generation entry point; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:1-13</a>, structural checker; <a href="../../../scripts/Test-RepoWikiDiagrams.ps1">scripts/Test-RepoWikiDiagrams.ps1:1-14</a>, optional diagram checker; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:1-16</a>, HTML export.</p>
+<h2 id="coverage-and-limitations">Coverage and limitations</h2>
+<p>The home and four task pages were factually reviewed against the local generation instructions, deciding script branches, reader controls, and relevant integration-test definitions. Structural checks cover local destinations, citation bounds, metadata, and navigation, not the truth of implementation claims.</p>
+<p>The guide does not cover changing the toolkit implementation, choosing an AI model, or installing a Mermaid renderer. Commands with example paths are unverified examples unless explicitly recorded as executed. The integration suite and HTML export were not run for this documentation change. The diagram scan found no Mermaid blocks and invoked no renderer; local <code>mmdc</code> was unavailable. Check details and source dependencies are recorded in the guide's manifest.</p>
+<h2 id="source-references">Source references</h2>
+<p>Source links point into this local checkout. Citation line ranges, when supplied, are text labels rather than editor-specific jumps. Keep the guide with its repository so relative links remain usable.</p>
+</article>
+        </main>
+        <aside class="outline" aria-label="On this page"><h2>On this page</h2><ul><li class=""><a href="#scope-and-snapshot">Scope and snapshot</a></li><li class=""><a href="#choose-your-task">Choose your task</a></li><li class=""><a href="#what-performs-each-task">What performs each task</a></li><li class=""><a href="#coverage-and-limitations">Coverage and limitations</a></li><li class=""><a href="#source-references">Source references</a></li></ul></aside>
+    </div>
+</body>
+
+</html>

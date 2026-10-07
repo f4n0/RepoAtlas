@@ -33,7 +33,7 @@ Markdown remains the editable source. HTML exports are local reading copies, not
 
 ## Requirements and privacy
 
-Generation needs an assistant with local read, search, and write access. The optional checking and HTML scripts require **PowerShell 7+**; diagram rendering additionally needs an already-installed, trusted **Mermaid CLI** with a working local browser runtime. Nothing is installed automatically.
+Generation needs an assistant with local read, search, and write access. The optional checking and HTML scripts require **PowerShell 7+**. HTML diagrams render offline in a modern browser using bundled **Mermaid.js**, with no CLI or server required. Separate diagram checks and optional static SVG export need an already-installed, trusted **Mermaid CLI** with a working local browser runtime. Nothing is installed automatically.
 
 Research and local reading/checks use the local checkout, but your configured assistant may use a cloud model. Completely offline generation requires an already-installed local model and a compatible assistant.
 
@@ -46,6 +46,14 @@ pwsh -NoProfile -File ./tests/Test-Validator.ps1
 ```
 
 Diagram tests use a renderer stand-in; they do not validate real Mermaid syntax or require Mermaid CLI.
+
+Optional real-browser checks require an existing Node.js/Playwright installation and browser:
+
+```powershell
+node ./tests/Test-BrowserDiagrams.cjs
+```
+
+These checks open local files, block network requests, and exercise all six recommended diagram types, invalid-diagram recovery, and the JavaScript-disabled fallback. Bundle provenance and rebuilding instructions are in [the vendor notes](templates/html/vendor/README.md).
 
 ## Credits
 

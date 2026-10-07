@@ -55,7 +55,11 @@ Search needs JavaScript and the generated local search asset. Without JavaScript
 
 ## Diagrams and source references
 
-Without `MermaidCliPath`, diagrams appear as expandable **Diagram source** blocks; their authored prose explanations remain available. To include SVGs, add `-MermaidCliPath "mmdc"`, or the executable path of a trusted installed local CLI. The exporter installs nothing and fails if the requested CLI is unavailable or rendering does not produce a nonempty SVG. Sources: [scripts/Export-RepoWikiHtml.ps1:182-185](../../../scripts/Export-RepoWikiHtml.ps1), CLI lookup; [scripts/Export-RepoWikiHtml.ps1:203-231](../../../scripts/Export-RepoWikiHtml.ps1), rendering/fallback. For separate rendering checks, see [validation and recovery](validation-and-recovery.md).
+By default, diagrams render in your browser using bundled Mermaid.js. Open `index.html` directly in a modern browser; no internet connection, web server, Node.js installation, or Mermaid CLI is needed. The exporter includes the local runtime only when diagrams need browser rendering, and only diagram pages load it. Sources: [scripts/Export-RepoWikiHtml.ps1](../../../scripts/Export-RepoWikiHtml.ps1), browser asset inclusion and script paths; [templates/html/page.html](../../../templates/html/page.html), deferred local scripts.
+
+Each diagram retains an expandable **Diagram source** block and its authored prose explanation. If JavaScript is disabled or the runtime cannot load, the source stays visible. If a diagram fails to render, a message appears and its source stays open; other diagrams continue rendering. Browser rendering happens when reading, so export metadata records `mode: browser` and `rendered: false`; successful export does not establish Mermaid syntax validity. Source: [templates/html/diagrams.js](../../../templates/html/diagrams.js), rendering and failure isolation; [scripts/Export-RepoWikiHtml.ps1](../../../scripts/Export-RepoWikiHtml.ps1), source fallback and metadata.
+
+For prebuilt static SVGs instead, add `-MermaidCliPath "mmdc"`, or the executable path of a trusted installed local CLI. This mode does not load the browser renderer. The exporter installs nothing and fails if the requested CLI is unavailable or rendering does not produce a nonempty SVG. Source: [scripts/Export-RepoWikiHtml.ps1](../../../scripts/Export-RepoWikiHtml.ps1), CLI rendering. For separate rendering checks, see [validation and recovery](validation-and-recovery.md).
 
 Source citations are rebased to the original repository files, not copied into the export. A browser may open or download them rather than show code inline, and displayed citation ranges do not provide source-line navigation. Keep the repository available in the relative location used by the export; this is not a self-contained publication bundle. Sources: [scripts/Export-RepoWikiHtml.ps1:247-257](../../../scripts/Export-RepoWikiHtml.ps1), local-target rebasing; [README.md](../../../README.md), source-reference limitations.
 
@@ -69,7 +73,8 @@ Source citations are rebased to the original repository files, not copied into t
 | `unfamiliar`, `modified`, or `different wiki` output | Preserve the existing content and choose another destination; do not bypass ownership guards |
 | Output overlap, different volume, or linked-path error | Choose a real, separate same-volume directory |
 | `Duplicate HTML output path` | Ask for a reviewed page rename and navigation/manifest update; for example, `README.md` and `index.md` in one folder both map to `index.html` |
-| `Mermaid CLI unavailable` or rendering failure | Correct the trusted local CLI/runtime, or omit the option to retain diagram source and prose |
+| `Mermaid CLI unavailable` or static rendering failure | Correct the trusted local CLI/runtime, or omit the option to use browser rendering |
+| Diagram source appears instead of a chart | Enable JavaScript, retain the local runtime assets, or repair the diagram syntax using the accompanying source |
 | `Wiki manifest changed during export` or `Wiki page changed during export` | Let the writer finish, then rerun against stable input |
 | Raw HTML absent from a page | Use ordinary Markdown; the exporter removes raw HTML blocks and tags |
 | Search absent | Check that JavaScript is enabled and exported local assets remain beside the pages |

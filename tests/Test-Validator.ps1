@@ -244,6 +244,8 @@ sequenceDiagram
     Assert-Check ($htmlTopic.Contains('aria-current="page"')) 'HTML navigation did not mark the active page.'
     Assert-Check ($htmlTopic.Contains('href="#execution"')) 'HTML heading outline did not use the generated heading ID.'
     Assert-Check ($htmlHome.Contains('<table>')) 'HTML conversion lost Markdown tables.'
+    Assert-Check (-not $htmlHome.Contains('mermaid.min.js')) 'A page without diagrams loaded the Mermaid runtime.'
+    Assert-Check (-not (Test-Path -LiteralPath (Join-Path $htmlOutput 'assets/mermaid.min.js'))) 'A diagram-free export copied the Mermaid runtime.'
     $searchScript = Get-Content -LiteralPath (Join-Path $htmlOutput 'assets/search.js') -Raw
     Assert-Check ($searchScript.Contains('Emit safe.')) 'Local search did not index page body text.'
     Assert-Check ($searchScript.Contains('workflows/run.html')) 'Local search did not index the converted page path.'
@@ -289,6 +291,15 @@ DO_NOT_RENDER
     Assert-Check ($fallbackHtml.Contains('<summary>Diagram source</summary>')) 'HTML export omitted the no-renderer diagram fallback.'
     Assert-Check ($fallbackHtml.Contains('The runner emits safe before done.')) 'HTML export lost the diagram prose fallback.'
     Assert-Check (-not $fallbackHtml.Contains("<script>alert('Not allowed')</script>")) 'Raw repository HTML became an active script.'
+    Assert-Check ($fallbackHtml.Contains('data-mermaid') -and $fallbackHtml.Contains('src="../assets/mermaid.min.js"') -and $fallbackHtml.Contains('src="../assets/diagrams.js"')) 'Browser diagram markup or nested script paths were missing.'
+    Assert-Check ($fallbackHtml.Contains('<details open>')) 'Browser diagrams did not preserve a visible no-JavaScript source fallback.'
+    foreach ($asset in @('mermaid.min.js', 'mermaid.min.js.LEGAL.txt', 'MERMAID-LICENSE.txt', 'diagrams.js')) {
+        Assert-Check (Test-Path -LiteralPath (Join-Path $htmlOutput "assets/$asset")) "Browser export omitted asset: $asset"
+    }
+    Assert-Check (-not (Test-Path -LiteralPath (Join-Path $htmlOutput 'assets/diagram-0.svg'))) 'Browser export built a static SVG.'
+    $browserMetadata = Get-Content -LiteralPath (Join-Path $htmlOutput '.wiki-export.json') -Raw | ConvertFrom-Json
+    Assert-Check (@($browserMetadata.diagrams).Count -eq 1 -and $browserMetadata.diagrams[0].mode -eq 'browser' -and -not $browserMetadata.diagrams[0].rendered) 'Browser export claimed rendering had already passed or counted fenced examples.'
+    Assert-Check ($browserMetadata.files.PSObject.Properties.Name -contains 'assets/mermaid.min.js') 'Runtime asset was absent from export ownership hashes.'
     Invoke-HtmlExport 0 'HTML export created' @('-Force', '-MermaidCliPath', $renderer)
     $svgHtml = Get-Content -LiteralPath (Join-Path $htmlOutput 'workflows/run.html') -Raw
     Assert-Check ($svgHtml.Contains('src="../assets/diagram-0.svg"')) 'HTML export did not link to the rendered SVG.'
@@ -296,6 +307,7 @@ DO_NOT_RENDER
     $exportMetadata = Get-Content -LiteralPath (Join-Path $htmlOutput '.wiki-export.json') -Raw | ConvertFrom-Json
     Assert-Check (@($exportMetadata.diagrams).Count -eq 1) 'Fenced examples or comments were treated as Mermaid diagrams.'
     Assert-Check ($exportMetadata.diagrams[0].rendered) 'HTML export did not record its diagram rendering outcome.'
+    Assert-Check ($exportMetadata.diagrams[0].mode -eq 'static' -and -not $svgHtml.Contains('mermaid.min.js')) 'Static export loaded the browser renderer or recorded the wrong mode.'
     [IO.File]::WriteAllText($topicPath, $topicWithDiagram.Replace('flowchart LR', 'REJECT_BY_RENDERER'))
     Invoke-HtmlExport 1 'Mermaid rendering failed' @('-Force', '-MermaidCliPath', $renderer)
     Assert-Check ([IO.File]::ReadAllText((Join-Path $htmlOutput 'workflows/run.html')) -eq $svgHtml) 'A failed export replaced the prior HTML output.'

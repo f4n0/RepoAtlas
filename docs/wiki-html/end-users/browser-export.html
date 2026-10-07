@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="English">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Read a wiki in your browser | RepoAtlas</title>
+    <link rel="stylesheet" href="../assets/wiki.css">
+    <script defer src="../assets/search-end-users.js"></script>
+    <script defer src="../assets/wiki.js"></script>
+    
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="topbar">
+        <a class="project-name" id="wiki-home" href="index.html">RepoAtlas</a>
+        <button class="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+    </header>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <form class="search" role="search" hidden>
+                <label for="wiki-search">Search this wiki</label>
+                <input id="wiki-search" type="search" autocomplete="off" placeholder="Search pages and content">
+            </form>
+            <section class="search-results" aria-label="Search results" hidden>
+                <p class="search-status" role="status" aria-live="polite"></p>
+                <ul id="search-results"></ul>
+            </section>
+            <nav class="contents" aria-label="Contents">
+                <h2>Contents</h2>
+                <ul><li class=""><a href="../index.html">All audiences</a></li><li class="nested"><a href="index.html">RepoAtlas for end users</a></li><li class="nested"><a href="getting-started.html">Generate your first wiki</a></li><li class="nested"><a href="manage-guides.html">Choose settings and maintain guides</a></li><li class="nested"><a href="validation-and-recovery.html">Check results and resolve problems</a></li><li class="nested"><a href="browser-export.html" aria-current="page">Read a wiki in your browser</a></li></ul>
+            </nav>
+        </aside>
+        <main id="content" tabindex="-1">
+            <nav class="breadcrumbs" aria-label="Page navigation"><a href="../index.html">All audiences</a><a href="index.html">Home</a></nav>
+            <article><h1 id="read-a-wiki-in-your-browser">Read a wiki in your browser</h1>
+<p><a href="index.html">Home</a> | <a href="index.html">Parent</a></p>
+<p>Export a completed Markdown wiki to a separate HTML copy, then open it locally. The exporter does not research, write, or adapt the guide for a different audience. Source: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:1-16</a>, purpose and parameters; <a href="../../../README.md">README.md</a>, audience guides and browser reading.</p>
+<h2 id="before-exporting">Before exporting</h2>
+<ul>
+<li>Use PowerShell 7 or later, with <code>pwsh</code> available as a command. The script uses PowerShell's bundled Markdown renderer; no extra packages, internet connection, or web server are required.</li>
+<li>Finish and validate the selected guide. For combined export, every registered guide must be complete.</li>
+<li>Keep input and output on the same filesystem volume as the documented repository. Choose a separate output folder, not a location inside the wiki or an ancestor containing the wiki/repository.</li>
+<li>Treat generated HTML as a reading copy; retain the Markdown wiki and local repository as the source of truth.</li>
+</ul>
+<p>Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:1-8</a>, prerequisites; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:91-164</a>, path, validation, and completion checks.</p>
+<h2 id="export-and-open">Export and open</h2>
+<ol>
+<li>Replace the example paths below with the toolkit location, wiki collection, and documented repository.</li>
+<li>Run the command. It validates input before converting pages.</li>
+<li>On success, open the printed <code>index.html</code> path in your browser. No local development server is needed.</li>
+<li>Keep the exported assets beside the HTML pages and retain access to the original repository for source citations.</li>
+</ol>
+<p>Unverified example command; HTML export was not run as part of writing this guide:</p>
+<pre><code class="language-powershell">pwsh -NoProfile -File &quot;C:/Tools/LocalRepoWiki/scripts/Export-RepoWikiHtml.ps1&quot; `
+  -WikiPath &quot;C:/Code/MyProject/docs/wiki&quot; `
+  -RepoRoot &quot;C:/Code/MyProject&quot;
+</code></pre>
+<p>Without <code>OutputPath</code>, the script appends <code>-html</code> to the resolved wiki directory: this example produces <code>docs/wiki-html</code>. Add <code>-OutputPath &quot;C:/Code/MyProject/docs/wiki-browser&quot;</code> to choose another same-volume destination. <code>README.md</code> pages become <code>index.html</code>; other listed Markdown pages keep their base names with <code>.html</code>. Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:91-105</a>, destination and validation; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:155-164</a>, page mapping; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:372-377</a>, result/error messages.</p>
+<h3 id="one-guide-or-the-collection">One guide or the collection</h3>
+<p>Passing the collection root exports the general index and matching audience subfolders. Passing <code>docs/wiki/end-users</code> exports only that completed guide; its default output is <code>docs/wiki/end-users-html</code>, and its <code>All audiences</code> reference leads to the original general Markdown index rather than creating a combined HTML index. This is useful when another guide is unfinished. Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:91-156</a>, contexts and standalone collection reference; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:247-257</a>, link rewriting; <a href="../../../tests/Test-Validator.ps1">tests/Test-Validator.ps1:440-477</a>, incomplete collection and standalone export tests.</p>
+<h2 id="navigate-and-search">Navigate and search</h2>
+<ol>
+<li>Choose a page from <strong>Contents</strong>. When its button is shown, <strong>Contents</strong> toggles the navigation panel; Escape closes it.</li>
+<li>Use <strong>Home</strong> to return to the current guide. In a combined export, <strong>All audiences</strong> returns to the selection index. <strong>On this page</strong> links target the page's H2/H3 headings.</li>
+<li>Type into <strong>Search this wiki</strong> to search titles and page text locally. Each whitespace-separated term must occur somewhere in the title/text, without case sensitivity. The matching-page count can exceed the first 30 links displayed; narrow the query when needed.</li>
+<li>Clear the search field to restore the contents list. Searching from the general index spans all exported guides and labels audience results; searching within a guide stays within that audience.</li>
+</ol>
+<p>Sources: <a href="../../../templates/html/page.html">templates/html/page.html</a>, visible labels and hidden-by-default search; <a href="../../../templates/html/wiki.js">templates/html/wiki.js</a>, toggle, matching, result limit, and reset; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:232-237</a>, outline; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:265-327</a>, navigation and audience-scoped indexes.</p>
+<p>Search needs JavaScript and the generated local search asset. Without JavaScript, the shell still contains ordinary page navigation, but search stays hidden. Source: <a href="../../../templates/html/page.html">templates/html/page.html</a>, deferred scripts and navigation; <a href="../../../templates/html/wiki.js">templates/html/wiki.js</a>, activation after search-data detection.</p>
+<h2 id="refresh-an-existing-copy">Refresh an existing copy</h2>
+<ol>
+<li>Update the Markdown guide, complete its review, and rerun validation.</li>
+<li>Repeat your export command with <code>-Force</code> only if the destination is an unchanged previous export of this same wiki.</li>
+<li>If the script reports unfamiliar or modified content, preserve those files and use a new empty output folder instead of deleting or overwriting them to bypass the guard.</li>
+</ol>
+<p><code>-Force</code> is not unconditional overwrite permission. The exporter checks ownership metadata and file hashes, rejects unknown/modified files and linked entries, and rejects destinations passing through symbolic links or junctions. It builds the new copy in staging, rechecks inputs and the destination before replacement, and reports failure with exit <code>1</code>. Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:48-88</a>, replacement guard; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:330-380</a>, input checks and staged replacement. Tests specifically check that rendering failure and an incomplete audience do not replace existing copies: <a href="../../../tests/Test-Validator.ps1">tests/Test-Validator.ps1:298-313</a>, <a href="../../../tests/Test-Validator.ps1">tests/Test-Validator.ps1:443-449</a>.</p>
+<h2 id="diagrams-and-source-references">Diagrams and source references</h2>
+<p>By default, diagrams render in your browser using bundled Mermaid.js. Open <code>index.html</code> directly in a modern browser; no internet connection, web server, Node.js installation, or Mermaid CLI is needed. The exporter includes the local runtime only when diagrams need browser rendering, and only diagram pages load it. Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1</a>, browser asset inclusion and script paths; <a href="../../../templates/html/page.html">templates/html/page.html</a>, deferred local scripts.</p>
+<p>Each diagram retains an expandable <strong>Diagram source</strong> block and its authored prose explanation. If JavaScript is disabled or the runtime cannot load, the source stays visible. If a diagram fails to render, a message appears and its source stays open; other diagrams continue rendering. Browser rendering happens when reading, so export metadata records <code>mode: browser</code> and <code>rendered: false</code>; successful export does not establish Mermaid syntax validity. Source: <a href="../../../templates/html/diagrams.js">templates/html/diagrams.js</a>, rendering and failure isolation; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1</a>, source fallback and metadata.</p>
+<p>For prebuilt static SVGs instead, add <code>-MermaidCliPath &quot;mmdc&quot;</code>, or the executable path of a trusted installed local CLI. This mode does not load the browser renderer. The exporter installs nothing and fails if the requested CLI is unavailable or rendering does not produce a nonempty SVG. Source: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1</a>, CLI rendering. For separate rendering checks, see <a href="validation-and-recovery.html">validation and recovery</a>.</p>
+<p>Source citations are rebased to the original repository files, not copied into the export. A browser may open or download them rather than show code inline, and displayed citation ranges do not provide source-line navigation. Keep the repository available in the relative location used by the export; this is not a self-contained publication bundle. Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:247-257</a>, local-target rebasing; <a href="../../../README.md">README.md</a>, source-reference limitations.</p>
+<h2 id="resolve-export-problems">Resolve export problems</h2>
+<table>
+<thead>
+<tr>
+<th>Message or symptom</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Wiki validation failed</code></td>
+<td>Run the structural validator on the selected input and repair its reported problems</td>
+</tr>
+<tr>
+<td><code>HTML export requires a completed wiki</code></td>
+<td>Resume unfinished work; export only a completed audience when another is unfinished</td>
+</tr>
+<tr>
+<td><code>HTML output already exists</code></td>
+<td>Use <code>-Force</code> for an unchanged owned export, or select a new empty destination</td>
+</tr>
+<tr>
+<td><code>unfamiliar</code>, <code>modified</code>, or <code>different wiki</code> output</td>
+<td>Preserve the existing content and choose another destination; do not bypass ownership guards</td>
+</tr>
+<tr>
+<td>Output overlap, different volume, or linked-path error</td>
+<td>Choose a real, separate same-volume directory</td>
+</tr>
+<tr>
+<td><code>Duplicate HTML output path</code></td>
+<td>Ask for a reviewed page rename and navigation/manifest update; for example, <code>README.md</code> and <code>index.md</code> in one folder both map to <code>index.html</code></td>
+</tr>
+<tr>
+<td><code>Mermaid CLI unavailable</code> or static rendering failure</td>
+<td>Correct the trusted local CLI/runtime, or omit the option to use browser rendering</td>
+</tr>
+<tr>
+<td>Diagram source appears instead of a chart</td>
+<td>Enable JavaScript, retain the local runtime assets, or repair the diagram syntax using the accompanying source</td>
+</tr>
+<tr>
+<td><code>Wiki manifest changed during export</code> or <code>Wiki page changed during export</code></td>
+<td>Let the writer finish, then rerun against stable input</td>
+</tr>
+<tr>
+<td>Raw HTML absent from a page</td>
+<td>Use ordinary Markdown; the exporter removes raw HTML blocks and tags</td>
+</tr>
+<tr>
+<td>Search absent</td>
+<td>Check that JavaScript is enabled and exported local assets remain beside the pages</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:48-105</a>, path/ownership/validation failures; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:155-195</a>, completion, collisions, and HTML removal; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:203-231</a>, diagram errors; <a href="../../../scripts/Export-RepoWikiHtml.ps1">scripts/Export-RepoWikiHtml.ps1:334-339</a>, concurrent edits; <a href="../../../templates/html/wiki.js">templates/html/wiki.js</a>, search activation.</p>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="validation-and-recovery.html">Check results and resolve problems</a></li>
+<li><a href="manage-guides.html">Choose settings and maintain guides</a></li>
+</ul>
+</article>
+        </main>
+        <aside class="outline" aria-label="On this page"><h2>On this page</h2><ul><li class=""><a href="#before-exporting">Before exporting</a></li><li class=""><a href="#export-and-open">Export and open</a></li><li class="subheading"><a href="#one-guide-or-the-collection">One guide or the collection</a></li><li class=""><a href="#navigate-and-search">Navigate and search</a></li><li class=""><a href="#refresh-an-existing-copy">Refresh an existing copy</a></li><li class=""><a href="#diagrams-and-source-references">Diagrams and source references</a></li><li class=""><a href="#resolve-export-problems">Resolve export problems</a></li><li class=""><a href="#related-pages">Related pages</a></li></ul></aside>
+    </div>
+</body>
+
+</html>

@@ -73,9 +73,12 @@ For a legacy wiki with `<wiki-root>/.wiki/manifest.json`, retain its existing la
 - Inspect the root tree, repository instructions, README, package/build manifests, existing docs, CI configuration, and test layout.
 - Identify languages, packages, executable entry points, core modules, configuration sources, and generated/vendored boundaries.
 - Read representative implementations and follow the important execution paths. Check tests for behavior and edge cases; do not treat test names alone as proof.
+- Before planning pages, trace a representative request, command, or user action from its actual entry point through configuration, core decisions, calls, state changes, and final output. Include a relevant failure or alternate path when present. For libraries, trace a public API through its implementation; for instruction/template repositories, trace how inputs become artifacts and how those artifacts are checked. Record deciding files and symbols in research notes, and use the trace to identify central mechanisms rather than inferring architecture from folders.
+- Identify boundaries that change the explanation: startup versus normal operation, build-time versus runtime behavior, default paths versus optional integrations, and production implementations versus test doubles. Establish which path and configuration each finding describes; do not generalize one traced path to the whole system.
 - Consult local architecture decisions, API specifications, migrations, and safe deployment examples when relevant. Treat them as evidence of intent or contracts, then check implementation agreement. Attribute design rationale to its documented source rather than inferring developer motivation from code.
 - If Git is available, record the current commit using a read-only command and whether the working tree has changes. Document the checked-out working tree, not a remote branch. If Git is unavailable or the folder is not a repository, use a null revision and `unknown` working-tree status.
 - Record scope exclusions and research gaps. Do not claim complete coverage unless actually achieved.
+- Make important gaps actionable: record what remains unknown, the missing evidence or next files to inspect, and which reader questions cannot yet be answered. A missing local implementation is not permission to invent how an external dependency behaves.
 
 ## Phase 2 — plan and checkpoint
 
@@ -86,6 +89,8 @@ Before choosing pages, build a compact capability map in your research notes. Or
 | A verified workflow or subsystem | Repository-relative files and deciding symbols actually read | What belongs here and what is covered elsewhere | Stable topic path |
 
 Trace each important capability from its entry point through its outputs or state changes, including relevant failure paths. Use this map to build the page plan and source dependencies in the manifest; revise it as you learn. Merge tightly coupled implementation pieces that explain one mechanism. Split topics with distinct responsibilities, actors, lifecycles, configuration, or operational concerns. Do not hide independent systems in catch-all chapters or create thin pages for minor helpers. Page count follows evidence and reader needs, not quotas.
+
+For central mechanisms, research how the result is achieved: the deciding conditions, ordering, enforced constraints, state ownership, and consequences when a constraint is violated. Look for callers, overrides, alternate implementations, and tests that could qualify or contradict the initial explanation. Persist those qualifications with the capability findings; neither a function name nor a single happy-path test establishes a general guarantee.
 
 Suggested topics, only where applicable to the selected audience:
 
@@ -100,6 +105,8 @@ For end users, plan around getting started, prerequisites, everyday tasks, user-
 
 A small repository can use a flat structure. Larger repositories can use section folders with `README.md` indexes. Every topic must be discoverable from the home page and its parent index. Add a "Where to change what" table when the code supports a useful one.
 
+For important contributor tasks, connect the change point to contracts that must be preserved, relevant tests to inspect, and related components likely to be affected. Ground these connections in verified interfaces and callers rather than speculative change advice.
+
 For architecture, use a C4-style zoom only as far as the evidence warrants:
 
 | View | Explain | Evidence to inspect |
@@ -110,6 +117,8 @@ For architecture, use a C4-style zoom only as far as the evidence warrants:
 | Selected code details | The deciding implementation of an important behavior | Functions, branches, types, and relevant tests |
 
 C4 containers are runtime/deployment units, not necessarily Docker containers. A small library or CLI may need only context and a component explanation. Do not force four pages or four diagrams, invent services, or require C4-specific Mermaid syntax. Separate architecture relationships from workflow execution order.
+
+As part of the page plan, identify useful diagram opportunities: system boundaries, a central execution sequence, nontrivial lifecycle transitions, and important data relationships. Record each proposed diagram's reader question, owning page, and deciding sources in research notes. Revisit these opportunities after research; include supported views that clarify the guide, and omit redundant or unsupported ones. Several diagrams are appropriate when they explain distinct aspects of a complex capability, not to meet a quota.
 
 Create `<output>/.wiki/manifest.json` using the contract below. Save the page map, source dependencies, and unfinished work there. Set a page to `in_progress` before researching/writing it and `complete` only after reviewing its content and links. Planned pages need not exist yet. If interrupted, leave accurate statuses and concrete `remainingWork`; do not mark everything complete to finish a session.
 
@@ -182,6 +191,8 @@ Use short paragraphs, sequential H2/H3 headings, compact tables, and ordinary bl
 
 Don't leave placeholders, generic filler, or empty sections in finished pages. Put citations beside the claims they support. An optional, deduplicated "Key source files" section is a reading guide, not a substitute for inline evidence or a repetition of citation text. Index/home pages may cite overview claims inline.
 
+Explain mechanisms, not just responsibilities: replace statements such as "the manager handles tasks" with the verified inputs, deciding steps, constraints, state changes, and observable outcomes. Distinguish startup/build-time setup from runtime execution and default behavior from optional paths wherever that distinction matters. Attribute rationale only when documented; describing what a mechanism enforces does not establish why its authors chose it. Keep the level of detail appropriate to the audience.
+
 ### Links and citations
 
 - Use real relative links between files. Calculate paths from the **containing page**, not the wiki root. Use `/` separators and explicit `.md` filenames.
@@ -194,9 +205,26 @@ Don't leave placeholders, generic filler, or empty sections in finished pages. P
 
 ### Diagrams and examples
 
-Use small Mermaid diagrams only when they explain a verified relationship or execution path. Choose flow/sequence diagrams for workflows, component diagrams for architecture, and ER diagrams only for verified data relationships. Every node and arrow must have an evidence-backed meaning; do not confuse a conceptual grouping with a source-level dependency. Accompany every diagram with source citations and a prose or numbered-list explanation so the page remains useful without Mermaid rendering. Do not reference a CDN, external image, or rendering service.
+Use Mermaid diagrams to answer specific reader questions about verified behavior. Actively consider diagrams for central capabilities rather than treating them as decoration added at the end. Select the view that explains the question:
 
-Prefer conservative Mermaid syntax supported by the intended viewer: simple node IDs, quoted flowchart labels, and distinct node/subgraph IDs (for example, prefix subgraphs with `sg_`). This is authoring guidance, not syntax validation. A renderer check does not establish that the diagram describes the code correctly.
+| Reader question | Mermaid view | Evidence required |
+| --- | --- | --- |
+| What owns each responsibility, and where are the system boundaries? | `flowchart` with labeled component/runtime groups | Entry points, registrations, callers, and integration/deployment configuration |
+| Which decisions determine the result? | `flowchart` with labeled branches | Deciding conditions, alternate paths, and resulting outputs or state changes |
+| Who calls whom, and in what order? | `sequenceDiagram` | Actual callers, message direction, responses, and relevant sync/async behavior |
+| Which states can an entity enter, and what triggers transitions? | `stateDiagram-v2` | Implemented states, transition conditions, terminal behavior, and failure/recovery paths |
+| How are persisted entities related? | `erDiagram` | Schemas, keys, and enforced or explicitly documented relationship cardinalities |
+| Which types form an important extension contract? | `classDiagram` | Verified signatures, inheritance/implementation, and ownership relationships useful to the audience |
+
+Use other diagram types only when the repository provides the necessary facts and the intended viewer supports them. Do not invent durations, metrics, timelines, cardinalities, services, or inheritance to fill a chart. A class diagram is not a catalog of every class. Prefer portable flowcharts over experimental architecture/C4 syntax unless support has been checked.
+
+Give each diagram a short descriptive heading or introduction stating its scope and question. Every node and arrow must have an evidence-backed meaning. Label important edges with the actual action or relationship, and explain dashed lines or other conventions. Distinguish calls, data movement, dependencies, and execution order; a conceptual grouping is not a source-level dependency. Show relevant alternate/failure paths using verified branches or sequence `alt`/`opt` blocks, and use `par` only when concurrency is established by the implementation.
+
+Keep one main question and abstraction level per diagram. Split a crowded overview into a small overview and focused detail views; a workflow may need both a decision flow and an interaction sequence if each adds information. Avoid duplicating the same graph across pages; link to its owning topic. Use concise audience-appropriate labels, group only meaningful boundaries, and choose `LR` or `TD` flowchart direction to keep the result readable in the intended viewer.
+
+Accompany every diagram with nearby source citations and a prose or numbered-list explanation, including important omissions, so the page remains useful without Mermaid rendering. Keep diagram definitions in fenced `mermaid` blocks as the editable source. Do not embed renderer scripts, reference a CDN, external image, or rendering service, or replace Markdown definitions with generated SVG files; HTML rendering is the exporter's responsibility.
+
+Prefer conservative Mermaid syntax supported by the intended viewer: simple stable node IDs, quoted flowchart labels, and distinct node/subgraph IDs (for example, prefix subgraphs with `sg_`). Avoid raw HTML labels, click callbacks, external assets, and diagram-level configuration directives that override viewer settings. Include `accTitle` and `accDescr` where supported, grounded in the diagram's actual meaning; always retain the prose fallback. This is authoring guidance, not syntax validation. A renderer check does not establish that the diagram describes the code correctly.
 
 Use short, language-tagged fenced code blocks. Distinguish their provenance:
 
@@ -213,9 +241,12 @@ For optional syntax/render checking, use an already-installed local Mermaid pars
 Before completion:
 
 1. Audit the draft against the deciding implementations, not just citation existence. Re-read important branches, defaults/precedence, interfaces, state changes, failures, and data-flow direction. Check excerpts against their cited ranges and diagram relationships against their sources. Distinguish tested cases from general guarantees and documented rationale from inference. Correct unsupported claims or state concrete limitations.
+   - Challenge significant claims by checking callers, overrides, alternate implementations, and counterexamples in tests. Qualify claims that apply only to a particular configuration, lifecycle phase, or implementation; test-double behavior is not proof of production behavior.
+   - Audit diagrams node by node and edge by edge against the deciding sources. Check arrow direction, branch conditions, state transitions, cardinalities, and ordering/concurrency. Confirm that diagram and prose agree and that omitted behavior does not change the explanation. When a viewer is available, also inspect clipping, unreadable labels, and excessive density; successful parsing alone is not a readability check.
 2. Ensure every finished page is reachable from the home contents and, where applicable, a section index. Ensure each non-home page links home and each topic links its parent.
 3. Check that all local link destinations exist, that citation paths stay within the repository, and that explicit line ranges are within the referenced file.
 4. Check all planned pages are written and statuses reflect reality; remove empty sections, placeholders, broken citations, and repeated boilerplate.
+   - Separately review usefulness for the intended reader: can they follow the main tasks, understand the central mechanism, and locate relevant change points or recovery steps? Fix missing prerequisites, unexplained terms, and distracting implementation detail. Revisit planned diagram opportunities and add supported views where prose alone makes relationships or ordering difficult to follow.
 5. If the toolkit's `scripts/Test-RepoWiki.ps1` is available and PowerShell 7+ is installed, run it with explicit `-WikiPath` and `-RepoRoot`. It checks structure and references, not factual accuracy or heading fragments. Otherwise perform equivalent checks with available local tools and record exactly what was checked.
 6. Perform optional diagram rendering checks as described above. Unavailable optional tools are limitations, not evidence of failure; actual diagram failures must be repaired, replaced with an accurate prose explanation, or left as outstanding work.
 7. Update the manifest's UTC timestamp, revision information, `validation`, limitations, and remaining work. Record factual review, structural checks, and optional diagram checks separately. Mark generation `complete` only if all planned pages are complete, the review is done, and applicable checks pass. Otherwise keep it `in_progress` and explain the outstanding work.

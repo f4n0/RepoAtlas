@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="English">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Choose settings and maintain guides | RepoAtlas</title>
+    <link rel="stylesheet" href="../assets/wiki.css">
+    <script defer src="../assets/search-end-users.js"></script>
+    <script defer src="../assets/wiki.js"></script>
+    
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="topbar">
+        <a class="project-name" id="wiki-home" href="index.html">RepoAtlas</a>
+        <button class="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+    </header>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <form class="search" role="search" hidden>
+                <label for="wiki-search">Search this wiki</label>
+                <input id="wiki-search" type="search" autocomplete="off" placeholder="Search pages and content">
+            </form>
+            <section class="search-results" aria-label="Search results" hidden>
+                <p class="search-status" role="status" aria-live="polite"></p>
+                <ul id="search-results"></ul>
+            </section>
+            <nav class="contents" aria-label="Contents">
+                <h2>Contents</h2>
+                <ul><li class=""><a href="../index.html">All audiences</a></li><li class="nested"><a href="index.html">RepoAtlas for end users</a></li><li class="nested"><a href="getting-started.html">Generate your first wiki</a></li><li class="nested"><a href="manage-guides.html" aria-current="page">Choose settings and maintain guides</a></li><li class="nested"><a href="validation-and-recovery.html">Check results and resolve problems</a></li><li class="nested"><a href="browser-export.html">Read a wiki in your browser</a></li></ul>
+            </nav>
+        </aside>
+        <main id="content" tabindex="-1">
+            <nav class="breadcrumbs" aria-label="Page navigation"><a href="../index.html">All audiences</a><a href="index.html">Home</a></nav>
+            <article><h1 id="choose-settings-and-maintain-guides">Choose settings and maintain guides</h1>
+<p><a href="index.html">Home</a> | <a href="index.html">Parent</a></p>
+<p>Use settings in your assistant request to choose the reader and coverage, then update the same guide as the repository changes. These are generation instructions, not command-line switches for the checking or export scripts. Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Inputs and defaults.</p>
+<h2 id="choose-settings">Choose settings</h2>
+<table>
+<thead>
+<tr>
+<th>Request setting</th>
+<th>Default or rule</th>
+<th>When to specify it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repository</td>
+<td>Specified local folder, otherwise the open repository; ambiguity requires clarification</td>
+<td>More than one repository is open, or the target is elsewhere</td>
+</tr>
+<tr>
+<td>Output</td>
+<td><code>docs/wiki</code> under the documented repository</td>
+<td>You want another local collection location</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>English</td>
+<td>Readers need a different language</td>
+</tr>
+<tr>
+<td>Audience</td>
+<td>New contributors for a new collection; an existing selected guide retains its audience</td>
+<td>Use <code>Audience: end users</code> for a task-oriented user guide</td>
+</tr>
+<tr>
+<td>Audience ID</td>
+<td><code>contributors</code> for new contributors, <code>end-users</code> for end users; reuse registered IDs</td>
+<td>Identify the exact guide to create or update</td>
+</tr>
+<tr>
+<td>Depth</td>
+<td>Standard, adapted to complexity</td>
+<td>Request concise or comprehensive coverage</td>
+</tr>
+<tr>
+<td>Focus / exclusions</td>
+<td>Major workflows; dependencies, generated output, binaries, and secrets excluded by default</td>
+<td>Prioritize user tasks or omit a named subsystem</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>Create a missing audience guide, otherwise update or resume it</td>
+<td>Make your intent explicit for an existing collection</td>
+</tr>
+</tbody>
+</table>
+<p>Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Inputs and defaults and working rules. No fixed page count is imposed.</p>
+<p>Focus and exclusions should appear in the guide's scope and limitations. Changing the audience or materially changing coverage triggers review and adaptation even if the source files have not changed. Changing only an audience's display name does not require a content rewrite. Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Updates and resuming.</p>
+<h2 id="add-a-guide-without-replacing-another">Add a guide without replacing another</h2>
+<ol>
+<li>Point the assistant at the existing collection root.</li>
+<li>State <code>Audience: end users</code> and <code>Audience ID: end-users</code>, or reuse the relevant registered ID.</li>
+<li>Ask it to create only that audience guide, preserve all other guides and manual edits, and refresh the general index.</li>
+<li>Check the general index to confirm both guides remain accessible and that their separate limitations are visible.</li>
+</ol>
+<p>IDs are lowercase kebab-case direct subfolders, such as <code>end-users</code>. Names, aliases, capitalization, or translated display titles should not produce duplicate guides. Each audience has an independent manifest and source snapshot; reviewing one does not imply the others were reviewed. Symbolic links and junctions are not supported as audience folders. Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Audience routing; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:65-91</a>, collection branch.</p>
+<p>If <code>Output</code> already names a registered audience directory, the instructions use it directly instead of nesting another <code>end-users</code> folder. If an existing output has no generation metadata, the assistant must inspect it and ask before replacing conflicting content. Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, audience routing and working rule 5.</p>
+<h2 id="resume-interrupted-work">Resume interrupted work</h2>
+<ol>
+<li>Use the same collection, audience ID, and intended scope.</li>
+<li>Ask the assistant to read the selected guide's manifest and existing pages first.</li>
+<li>Ask it to finish the <code>planned</code> and <code>in_progress</code> pages and the manifest's <code>remainingWork</code>, preserving completed content and manual edits.</li>
+<li>Ask for renewed factual review and applicable checks, not just a change of status to <code>complete</code>.</li>
+</ol>
+<p>The instructions require progress to be recorded before completion. A finished guide has complete pages, no remaining work, and passed validation. The validator warns about unfinished generation and permits missing planned pages in an unfinished guide, so exit code <code>0</code> alone does not mean writing is done. Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, manifest contract; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:149-175</a>.</p>
+<h2 id="update-after-repository-changes">Update after repository changes</h2>
+<p>Illustrative assistant request, unverified as a separate update run:</p>
+<pre><code class="language-text">Follow C:/Tools/LocalRepoWiki/prompts/repo-wiki.md.
+Update the end-users guide in docs/wiki against the current working tree.
+Audience: end users
+Audience ID: end-users
+First map changed behavior and sources to affected pages and sections.
+Recheck direct and indirect dependencies, preserve manual edits and stable
+page names, and refresh citations, navigation, and the manifest.
+Refresh the general index. Preserve all other audience guides.
+Complete factual review and applicable validation; report remaining gaps.
+</code></pre>
+<p>The assistant should compare actual working-tree files, including uncommitted changes, rather than treating the recorded commit as a complete change detector. Changed tests, internal refactors, moved sources, and indirect dependencies can affect explanations or citations. If the previous source state is unavailable, it must reread current sources and report that limitation rather than invent a diff. Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Updates and resuming.</p>
+<h2 id="legacy-layouts-and-relocation">Legacy layouts and relocation</h2>
+<p>A legacy single guide has a root <code>.wiki/manifest.json</code> instead of a collection registry. Updating the same audience retains that layout. Creating another audience or converting the collection requires an explained migration and your permission before moving existing pages or replacing the root index. The validator rejects a root containing both metadata formats. Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, legacy routing; <a href="../../../scripts/Test-RepoWiki.ps1">scripts/Test-RepoWiki.ps1:65-70</a>.</p>
+<p>Source references depend on the wiki's relative location. Move the guide with the repository, or ask for links and <code>repository.relativeRoot</code> to be recalculated and checked after relocation. An external output directory is allowed, but links must still resolve to the documented local repository. Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, Links and citations and migration rules.</p>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="getting-started.html">Generate your first wiki</a></li>
+<li><a href="validation-and-recovery.html">Check results and resolve problems</a></li>
+<li><a href="browser-export.html">Read a wiki in your browser</a></li>
+</ul>
+</article>
+        </main>
+        <aside class="outline" aria-label="On this page"><h2>On this page</h2><ul><li class=""><a href="#choose-settings">Choose settings</a></li><li class=""><a href="#add-a-guide-without-replacing-another">Add a guide without replacing another</a></li><li class=""><a href="#resume-interrupted-work">Resume interrupted work</a></li><li class=""><a href="#update-after-repository-changes">Update after repository changes</a></li><li class=""><a href="#legacy-layouts-and-relocation">Legacy layouts and relocation</a></li><li class=""><a href="#related-pages">Related pages</a></li></ul></aside>
+    </div>
+</body>
+
+</html>

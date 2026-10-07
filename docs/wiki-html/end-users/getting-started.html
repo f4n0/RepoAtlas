@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="English">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Generate your first wiki | RepoAtlas</title>
+    <link rel="stylesheet" href="../assets/wiki.css">
+    <script defer src="../assets/search-end-users.js"></script>
+    <script defer src="../assets/wiki.js"></script>
+    
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="topbar">
+        <a class="project-name" id="wiki-home" href="index.html">RepoAtlas</a>
+        <button class="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">Contents</button>
+    </header>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <form class="search" role="search" hidden>
+                <label for="wiki-search">Search this wiki</label>
+                <input id="wiki-search" type="search" autocomplete="off" placeholder="Search pages and content">
+            </form>
+            <section class="search-results" aria-label="Search results" hidden>
+                <p class="search-status" role="status" aria-live="polite"></p>
+                <ul id="search-results"></ul>
+            </section>
+            <nav class="contents" aria-label="Contents">
+                <h2>Contents</h2>
+                <ul><li class=""><a href="../index.html">All audiences</a></li><li class="nested"><a href="index.html">RepoAtlas for end users</a></li><li class="nested"><a href="getting-started.html" aria-current="page">Generate your first wiki</a></li><li class="nested"><a href="manage-guides.html">Choose settings and maintain guides</a></li><li class="nested"><a href="validation-and-recovery.html">Check results and resolve problems</a></li><li class="nested"><a href="browser-export.html">Read a wiki in your browser</a></li></ul>
+            </nav>
+        </aside>
+        <main id="content" tabindex="-1">
+            <nav class="breadcrumbs" aria-label="Page navigation"><a href="../index.html">All audiences</a><a href="index.html">Home</a></nav>
+            <article><h1 id="generate-your-first-wiki">Generate your first wiki</h1>
+<p><a href="index.html">Home</a> | <a href="index.html">Parent</a></p>
+<p>Use this page to create a wiki for a local repository. RepoAtlas is a set of assistant instructions and optional checking/export tools, not a hosted documentation service or an application that runs a model for you. Source: <a href="../../../README.md">README.md</a>.</p>
+<h2 id="before-you-start">Before you start</h2>
+<ul>
+<li>Have the repository you want documented available locally.</li>
+<li>Use an AI coding assistant that can read, search, and write local files, and give it access to the toolkit's generation instructions.</li>
+<li>Decide who will read the wiki. If you do not specify an audience for a new collection, the instructions default to new contributors, not end users.</li>
+<li>PowerShell 7 or later is needed only for the supplied validation, diagram, and HTML scripts. The writing instructions themselves are tool-neutral, and the toolkit needs no package installation or server.</li>
+</ul>
+<p>Sources: <a href="../../../README.md">README.md</a>, <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>.</p>
+<h2 id="create-an-end-user-guide">Create an end-user guide</h2>
+<ol>
+<li>Open the repository you want documented in your assistant's workspace. If several repositories are open, specify the repository path explicitly.</li>
+<li>Attach, paste, or reference the toolkit's <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>. You do not need to copy the optional templates into the target repository.</li>
+<li>Send the request below after replacing the toolkit path. If another repository is open, specify that repository rather than accidentally documenting the toolkit.</li>
+<li>Let the assistant complete its research, pages, factual review, and validation. For a large repository it may leave an honest in-progress checkpoint; see <a href="manage-guides.html">resume and update</a>.</li>
+<li>Open the generated collection's <code>docs/wiki/README.md</code> in Markdown preview, choose <strong>End users</strong>, and follow its task links. Within this toolkit's own generated collection, <a href="../index.html">All audiences</a> opens that index.</li>
+</ol>
+<p>Illustrative assistant request, unverified as a separate generation run:</p>
+<pre><code class="language-text">Follow C:/Tools/LocalRepoWiki/prompts/repo-wiki.md.
+Document the repository currently open.
+Output: docs/wiki
+Language: English
+Audience: end users
+Audience ID: end-users
+Depth: standard
+Focus: getting started, everyday tasks, user-facing settings, and troubleshooting.
+Complete the research, pages, factual review, and validation.
+Preserve existing guides and manual edits. Refresh the general index.
+</code></pre>
+<p>The path in this request locates the toolkit; <code>Output</code> belongs to the repository being documented. Sources: <a href="../../../README.md">README.md</a>, <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, input defaults and audience routing.</p>
+<h2 id="recognize-the-result">Recognize the result</h2>
+<p>A new collection has this layout; only audiences you request are generated:</p>
+<pre><code class="language-text">docs/wiki/
+  README.md                    selection index
+  .wiki/audiences.json          registered guides
+  end-users/
+    README.md                  end-user home and contents
+    .wiki/manifest.json         scope, sources, progress, and checks
+    ...                        task pages chosen for this repository
+</code></pre>
+<p>Do not expect a fixed number of pages. The assistant should organize verified reader tasks rather than create one page per source file. Topic pages include local evidence and navigation; the home explains the project, its scope, and coverage limitations. Source: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, audience routing and Phases 2-3.</p>
+<p>The Markdown is the editable source. HTML is an optional separate copy, described in <a href="browser-export.html">browser export</a>. Existing legacy wikis can have their manifest directly at the wiki root; updating one does not automatically convert it to audience folders. Source: <a href="../../../README.md">README.md</a>.</p>
+<h2 id="privacy-and-offline-boundaries">Privacy and offline boundaries</h2>
+<p>The generation instructions restrict research to local evidence, exclude secrets and generated output, and forbid fetching URLs or downloading dependencies. The validator and exported reader also work locally. However, your assistant may send context to its configured cloud model. Fully offline generation requires an already-installed local model and an assistant capable of using it; RepoAtlas does not supply either. Sources: <a href="../../../prompts/repo-wiki.md">prompts/repo-wiki.md</a>, working rules; <a href="../../../README.md">README.md</a>, Offline behavior.</p>
+<h2 id="before-relying-on-the-guide">Before relying on the guide</h2>
+<p>Check its stated audience, snapshot, and limitations. Ask for unfinished work to be completed rather than accepting an outline or assuming a successful link check proves the content. Use <a href="validation-and-recovery.html">validation and recovery</a> to distinguish factual review, structure checking, and optional rendering.</p>
+<h2 id="related-pages">Related pages</h2>
+<ul>
+<li><a href="manage-guides.html">Choose settings and maintain guides</a></li>
+<li><a href="validation-and-recovery.html">Check results and resolve problems</a></li>
+<li><a href="browser-export.html">Read a wiki in your browser</a></li>
+</ul>
+</article>
+        </main>
+        <aside class="outline" aria-label="On this page"><h2>On this page</h2><ul><li class=""><a href="#before-you-start">Before you start</a></li><li class=""><a href="#create-an-end-user-guide">Create an end-user guide</a></li><li class=""><a href="#recognize-the-result">Recognize the result</a></li><li class=""><a href="#privacy-and-offline-boundaries">Privacy and offline boundaries</a></li><li class=""><a href="#before-relying-on-the-guide">Before relying on the guide</a></li><li class=""><a href="#related-pages">Related pages</a></li></ul></aside>
+    </div>
+</body>
+
+</html>

@@ -4,7 +4,8 @@
 Exports a completed Markdown wiki to a separate local HTML folder.
 .DESCRIPTION
 Uses PowerShell's bundled Markdig renderer. No packages, remote assets, or server
-are required. Optional diagrams use an explicitly supplied local Mermaid CLI.
+are required. Diagrams render in the browser using bundled Mermaid JavaScript.
+An explicitly supplied local Mermaid CLI can instead create static SVGs.
 Force replaces only a verified, unchanged export belonging to this wiki.
 #>
 [CmdletBinding()]
@@ -205,7 +206,7 @@ try {
                 if ([string]::IsNullOrWhiteSpace($code)) { throw "$($page.Path): empty Mermaid block." }
                 $marker = 'wiki_diagram_' + [guid]::NewGuid().ToString('N')
                 [Markdig.Renderers.Html.HtmlAttributesExtensions]::GetAttributes($node).Classes.Add($marker)
-                $diagramResult = @{ page = $page.Path; line = $node.Line + 1; rendered = $false }
+                $diagramResult = @{ page = $page.Path; line = $node.Line + 1; rendered = $false; mode = if ($cli) { 'static' } else { 'browser' } }
                 if ($cli) {
                     $renderDirectory = Join-Path $staging '.render'
                     [IO.Directory]::CreateDirectory($renderDirectory) | Out-Null
@@ -226,7 +227,7 @@ try {
                     Remove-Item -LiteralPath $renderDirectory -Recurse -Force
                 }
                 else {
-                    $diagramHtml[$marker] = '<details class="diagram"><summary>Diagram source</summary><pre><code>' + [Net.WebUtility]::HtmlEncode($code) + '</code></pre></details>'
+                    $diagramHtml[$marker] = '<figure class="diagram" data-mermaid><div class="diagram-view" hidden></div><p class="diagram-status" role="status">Diagram preview requires JavaScript. The source is available below.</p><details open><summary>Diagram source</summary><pre><code>' + [Net.WebUtility]::HtmlEncode($code) + '</code></pre></details></figure>'
                 }
                 $diagramResults.Add($diagramResult)
             }
@@ -290,6 +291,18 @@ try {
             $breadcrumbs += "<a href=`"$([Net.WebUtility]::HtmlEncode($parentHref))`">$([Net.WebUtility]::HtmlEncode($pages[$parentPath].Title))</a>"
         }
         $outline = if ($headings.Count) { '<h2>On this page</h2><ul>' + ($headings -join '') + '</ul>' } else { '' }
+        $diagramScripts = ''
+        if (-not $cli -and $diagramHtml.Count) {
+            if (-not (Test-Path -LiteralPath (Join-Path $staging 'assets/mermaid.min.js'))) {
+                foreach ($asset in @('mermaid.min.js', 'mermaid.min.js.LEGAL.txt', 'MERMAID-LICENSE.txt')) {
+                    Copy-Item -LiteralPath (Join-Path $templateRoot "vendor/$asset") -Destination (Join-Path $staging "assets/$asset")
+                }
+                Copy-Item -LiteralPath (Join-Path $templateRoot 'diagrams.js') -Destination (Join-Path $staging 'assets/diagrams.js')
+            }
+            $mermaidHref = [Net.WebUtility]::HtmlEncode((Get-LinkPath $targetDirectory (Join-Path $destination 'assets/mermaid.min.js')))
+            $diagramsHref = [Net.WebUtility]::HtmlEncode((Get-LinkPath $targetDirectory (Join-Path $destination 'assets/diagrams.js')))
+            $diagramScripts = "<script defer src=`"$mermaidHref`"></script><script defer src=`"$diagramsHref`"></script>"
+        }
         $values = @{
             language      = [Net.WebUtility]::HtmlEncode($context.Manifest.scope.language)
             page_title    = [Net.WebUtility]::HtmlEncode($page.Title)
@@ -298,6 +311,7 @@ try {
             styles_href   = Get-LinkPath $targetDirectory (Join-Path $destination 'assets/wiki.css')
             script_href   = Get-LinkPath $targetDirectory (Join-Path $destination 'assets/wiki.js')
             search_href   = Get-LinkPath $targetDirectory (Join-Path $destination $context.Search)
+            diagram_scripts = $diagramScripts
             navigation    = '<ul>' + ($navigation -join '') + '</ul>'
             breadcrumbs   = $breadcrumbs
             outline       = $outline

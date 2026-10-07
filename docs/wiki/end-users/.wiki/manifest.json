@@ -87,6 +87,7 @@
                 "scripts/Export-RepoWikiHtml.ps1",
                 "templates/html/page.html",
                 "templates/html/wiki.js",
+                "templates/html/diagrams.js",
                 "tests/Test-Validator.ps1"
             ]
         }
