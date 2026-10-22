@@ -134,6 +134,10 @@ Source: [src/run.ps1:1-3](../../../src/run.ps1).
     [IO.File]::WriteAllText((Join-Path $wiki '.wiki/manifest.json'), ($manifest | ConvertTo-Json -Depth 10))
     Invoke-Validator 0 'Validation passed: 3 pages'
 
+    [IO.File]::WriteAllText((Join-Path $wiki 'SKILL.md'), "# LLM guide`n`nRoutes questions to the fixture pages.`n")
+    Invoke-Validator 0 'Validation passed: 3 pages'
+    Remove-Item -LiteralPath (Join-Path $wiki 'SKILL.md')
+
     [IO.File]::WriteAllText($topicPath, $topic.Replace('src/run.ps1:1-3', 'src/run.ps1:1-99'))
     Invoke-Validator 1 'invalid line range'
     [IO.File]::WriteAllText($topicPath, $topic + "`n[Missing](missing.md)`n")
@@ -415,6 +419,9 @@ An inline <img src="missing.png" onerror="alert('Not allowed')"> tag is not trus
         [IO.File]::WriteAllText((Join-Path $audienceRoot '.wiki/manifest.json'), ($audienceManifest | ConvertTo-Json -Depth 10))
     }
     Invoke-Validator 0 'Validation passed: 2 audiences and general index'
+    [IO.File]::WriteAllText((Join-Path $wiki 'SKILL.md'), "# LLM guide`n`nRoutes questions to both audience guides.`n")
+    Invoke-Validator 0 'Validation passed: 2 audiences and general index'
+    Remove-Item -LiteralPath (Join-Path $wiki 'SKILL.md')
     [IO.File]::WriteAllText((Join-Path $wiki 'README.md'), $generalIndex.Replace('end-users/README.md', 'end-users/missing.md'))
     Invoke-Validator 1 'missing audience link'
     [IO.File]::WriteAllText((Join-Path $wiki 'README.md'), $generalIndex)

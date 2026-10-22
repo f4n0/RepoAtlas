@@ -16,6 +16,8 @@ and use standard depth. Complete the research, pages, and validation.
 
 4. Open `docs/wiki/README.md` in your editor's Markdown preview and follow the links.
 
+Generated wikis also include `SKILL.md` at the wiki root: a compact retrieval guide that routes AI assistants to the right audience, page, and source terms.
+
 The prompt is self-contained; templates are optional examples. RepoAtlas does not configure or run your assistant's model.
 
 ## Documentation

@@ -20,6 +20,7 @@ Sources: [README.md](../../../README.md), [prompts/repo-wiki.md](../../../prompt
 3. Send the request below after replacing the toolkit path. If another repository is open, specify that repository rather than accidentally documenting the toolkit.
 4. Let the assistant complete its research, pages, factual review, and validation. For a large repository it may leave an honest in-progress checkpoint; see [resume and update](manage-guides.md).
 5. Open the generated collection's `docs/wiki/README.md` in Markdown preview, choose **End users**, and follow its task links. Within this toolkit's own generated collection, [All audiences](../README.md) opens that index.
+6. For AI-assisted retrieval, open `SKILL.md` at the collection root. The general index points to it; it consolidates question routes, page summaries, source terms, and known limits, and is not listed as an audience page.
 
 Illustrative assistant request, unverified as a separate generation run:
 
@@ -33,7 +34,7 @@ Audience ID: end-users
 Depth: standard
 Focus: getting started, everyday tasks, user-facing settings, and troubleshooting.
 Complete the research, pages, factual review, and validation.
-Preserve existing guides and manual edits. Refresh the general index.
+Preserve existing guides and manual edits. Refresh the general index and root SKILL.md.
 ```
 
 The path in this request locates the toolkit; `Output` belongs to the repository being documented. Sources: [README.md](../../../README.md), [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), input defaults and audience routing.
@@ -45,6 +46,7 @@ A new collection has this layout; only audiences you request are generated:
 ```text
 docs/wiki/
   README.md                    selection index
+  SKILL.md                     LLM interrogation and routing guide
   .wiki/audiences.json          registered guides
   end-users/
     README.md                  end-user home and contents
@@ -54,6 +56,8 @@ docs/wiki/
 
 Do not expect a fixed number of pages. The assistant should organize verified reader tasks rather than create one page per source file. Topic pages include local evidence and navigation; the home explains the project, its scope, and coverage limitations. Source: [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), audience routing and Phases 2-3.
 
+The root `SKILL.md` is built after the pages and manifest, so its routes and catalog match the finished guide. It is a companion artifact, not an audience home or manifest page. Sources: [prompts/repo-wiki.md:61-75](../../../prompts/repo-wiki.md), interrogation guide; [prompts/repo-wiki.md:256-258](../../../prompts/repo-wiki.md), build phase; [prompts/repo-wiki.md:302](../../../prompts/repo-wiki.md), manifest contract note.
+
 The Markdown is the editable source. HTML is an optional separate copy, described in [browser export](browser-export.md). Existing legacy wikis can have their manifest directly at the wiki root; updating one does not automatically convert it to audience folders. Source: [README.md](../../../README.md).
 
 ## Privacy and offline boundaries
@@ -62,7 +66,7 @@ The generation instructions restrict research to local evidence, exclude secrets
 
 ## Before relying on the guide
 
-Check its stated audience, snapshot, and limitations. Ask for unfinished work to be completed rather than accepting an outline or assuming a successful link check proves the content. Use [validation and recovery](validation-and-recovery.md) to distinguish factual review, structure checking, and optional rendering.
+Check its stated audience, snapshot, and limitations. Ask for unfinished work to be completed rather than accepting an outline or assuming a successful link check proves the content. Use [validation and recovery](validation-and-recovery.md) to distinguish factual review, structure checking, and optional rendering. For AI-assisted retrieval, verify that `SKILL.md` routes to existing pages and reflects the same limitations. Source: [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4.
 
 ## Related pages
 

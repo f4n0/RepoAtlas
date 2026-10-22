@@ -2,7 +2,7 @@
 
 [Home](README.md) | [Parent](README.md)
 
-Use this page before relying on a generated wiki or exporting it. Factual review, structural validation, and diagram rendering answer different questions; a successful check is not proof that the assistant's explanations are correct. Sources: [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4; [scripts/Test-RepoWiki.ps1:1-8](../../../scripts/Test-RepoWiki.ps1).
+Use this page before relying on a generated wiki or exporting it. Factual review, structural validation, and diagram rendering answer different questions; a successful check is not proof that the assistant's explanations are correct. Sources: [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4; [scripts/Test-RepoWiki.ps1:1-10](../../../scripts/Test-RepoWiki.ps1).
 
 ## Review content and completion
 
@@ -10,8 +10,9 @@ Use this page before relying on a generated wiki or exporting it. Factual review
 2. Ask the assistant to audit significant claims against deciding code branches, not just verify that cited files exist. This includes settings, defaults, outputs, errors, and diagrams where present.
 3. Inspect the selected guide's `.wiki/manifest.json`: generation and page statuses should be `complete`, `remainingWork` should be empty, and validation should be `passed` before it is called finished.
 4. Keep any honest limitations visible. A complete scoped guide need not claim that every subsystem, sample command, or optional renderer was checked.
+5. Check the collection root's `SKILL.md`: its routes and catalog should reference existing pages and match their status and limitations. It is not a manifest page, so inspect it directly.
 
-Sources: [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4 and manifest contract; [scripts/Test-RepoWiki.ps1:149-175](../../../scripts/Test-RepoWiki.ps1), consistency checks.
+Sources: [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4 and manifest contract; [prompts/repo-wiki.md:61-75](../../../prompts/repo-wiki.md), interrogation guide; [prompts/repo-wiki.md:269](../../../prompts/repo-wiki.md), guide review; [scripts/Test-RepoWiki.ps1:150-176](../../../scripts/Test-RepoWiki.ps1), consistency checks.
 
 ## Run structural validation
 
@@ -23,7 +24,7 @@ pwsh -NoProfile -File "C:/Tools/LocalRepoWiki/scripts/Test-RepoWiki.ps1" `
   -RepoRoot "C:/Code/MyProject"
 ```
 
-`RepoRoot` is the repository being documented, not necessarily the toolkit folder. Pass the audience folder to check only that guide. To check the general index and every registered guide, run the same command with `-WikiPath "C:/Code/MyProject/docs/wiki"`. Source: [scripts/Test-RepoWiki.ps1:1-13](../../../scripts/Test-RepoWiki.ps1), parameters; [scripts/Test-RepoWiki.ps1:63-130](../../../scripts/Test-RepoWiki.ps1), collection dispatch.
+`RepoRoot` is the repository being documented, not necessarily the toolkit folder. Pass the audience folder to check only that guide. To check the general index and every registered guide, run the same command with `-WikiPath "C:/Code/MyProject/docs/wiki"`. Source: [scripts/Test-RepoWiki.ps1:1-15](../../../scripts/Test-RepoWiki.ps1), parameters; [scripts/Test-RepoWiki.ps1:66-131](../../../scripts/Test-RepoWiki.ps1), collection dispatch.
 
 | Result | Meaning | Next action |
 | --- | --- | --- |
@@ -32,9 +33,9 @@ pwsh -NoProfile -File "C:/Tools/LocalRepoWiki/scripts/Test-RepoWiki.ps1" `
 | Warnings about unfinished generation or missing planned pages | An unfinished guide may still pass structurally | Resume its recorded work; do not label it complete yet |
 | Warning about an external URL or heading fragment | That target was not checked offline | Treat it as unverified; prefer portable local file links |
 
-Sources: [scripts/Test-RepoWiki.ps1:149-175](../../../scripts/Test-RepoWiki.ps1), completion warnings; [scripts/Test-RepoWiki.ps1:200-264](../../../scripts/Test-RepoWiki.ps1), link checks and exit handling.
+Sources: [scripts/Test-RepoWiki.ps1:150-176](../../../scripts/Test-RepoWiki.ps1), completion warnings; [scripts/Test-RepoWiki.ps1:204-268](../../../scripts/Test-RepoWiki.ps1), link checks and exit handling.
 
-The script writes no files. It checks metadata, listed-page coverage, one H1 per page, unresolved template markers, home/parent navigation, local destinations, cited-source dependencies, and explicit citation line bounds. It does not verify factual claims, source-line meaning, Mermaid syntax, or heading-fragment validity, and it is designed for the prompt's simple Markdown conventions. Sources: [scripts/Test-RepoWiki.ps1:132-264](../../../scripts/Test-RepoWiki.ps1), individual-guide checks; [scripts/Test-RepoWiki.ps1:1-8](../../../scripts/Test-RepoWiki.ps1), scope.
+The script writes no files. It checks metadata, listed-page coverage, one H1 per page, unresolved template markers, home/parent navigation, local destinations, cited-source dependencies, and explicit citation line bounds. A root `SKILL.md` is exempt from page coverage because it is a companion guide, not a wiki page. It does not verify factual claims, source-line meaning, Mermaid syntax, heading-fragment validity, or the skill guide's routes, and it is designed for the prompt's simple Markdown conventions. Sources: [scripts/Test-RepoWiki.ps1:136-268](../../../scripts/Test-RepoWiki.ps1), individual-guide checks; [scripts/Test-RepoWiki.ps1:184-190](../../../scripts/Test-RepoWiki.ps1), root guide exemption; [scripts/Test-RepoWiki.ps1:1-10](../../../scripts/Test-RepoWiki.ps1), scope.
 
 ## Repair common failures
 
@@ -44,13 +45,14 @@ The script writes no files. It checks metadata, listed-page coverage, one H1 per
 | `repository.relativeRoot does not resolve to RepoRoot` | Confirm the documented repository path and ask the assistant to recalculate metadata from the audience directory |
 | Missing link target or invalid line range | Ask for the affected page and source to be reread; refresh the link or citation based on actual evidence |
 | Page absent from manifest or home contents | Ask the assistant to reconcile the page plan, metadata, and contents without deleting unfamiliar/manual pages |
+| `SKILL.md` missing, stale, or misrouted | Ask the assistant to rebuild it from the finished pages and manifests; keep it at the collection root and out of audience manifests |
 | Missing home, parent, or general-index link | Restore audience-local home/parent navigation and the registered home page's `All audiences` link |
 | Invalid/duplicate audience ID or linked audience directory | Use a unique lowercase kebab-case ID and a real direct child directory, not a symbolic link or junction |
 | Both registry and single-wiki manifest at the root | Stop and resolve the intended layout; authorize a migration if needed rather than mixing contracts |
 
-Sources: [scripts/Test-RepoWiki.ps1:65-130](../../../scripts/Test-RepoWiki.ps1), collection rules; [scripts/Test-RepoWiki.ps1:132-253](../../../scripts/Test-RepoWiki.ps1), manifest and navigation checks; [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), preservation and migration requirements.
+Sources: [scripts/Test-RepoWiki.ps1:66-131](../../../scripts/Test-RepoWiki.ps1), collection rules; [scripts/Test-RepoWiki.ps1:136-257](../../../scripts/Test-RepoWiki.ps1), manifest and navigation checks; [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), preservation and migration requirements; [prompts/repo-wiki.md:61-75](../../../prompts/repo-wiki.md), interrogation guide rebuild rules.
 
-Collection failures identify the affected audience. Check your selected guide separately when another guide is incomplete or broken; unrelated guide failures should not be recorded as unfinished work for your guide. Combined export still requires all registered guides to be complete. Sources: [scripts/Test-RepoWiki.ps1:74-91](../../../scripts/Test-RepoWiki.ps1), child-result handling; [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4 collection validation.
+Collection failures identify the affected audience. Check your selected guide separately when another guide is incomplete or broken; unrelated guide failures should not be recorded as unfinished work for your guide. Combined export still requires all registered guides to be complete. Sources: [scripts/Test-RepoWiki.ps1:75-92](../../../scripts/Test-RepoWiki.ps1), child-result handling; [prompts/repo-wiki.md](../../../prompts/repo-wiki.md), Phase 4 collection validation.
 
 ## Optional diagram checks
 
@@ -74,7 +76,7 @@ The checker scans Markdown recursively, ignores root `.wiki` metadata, and skips
 
 ## What the repository tests establish
 
-The integration tests include broken collection links and IDs, source-link preservation during export, unchanged input Markdown, unknown/edited export-file rejection, and preservation of an existing export when rendering or completion checks fail. These are specific tested cases, not a guarantee about all inputs. The test source was reviewed for this guide; the integration suite was not rerun for this documentation change. Source: [tests/Test-Validator.ps1:232-313](../../../tests/Test-Validator.ps1), single-guide export cases; [tests/Test-Validator.ps1:405-454](../../../tests/Test-Validator.ps1), collection cases.
+The integration tests include broken collection links and IDs, source-link preservation during export, unchanged input Markdown, unknown/edited export-file rejection, preservation of an existing export when rendering or completion checks fail, and root `SKILL.md` exemption in standalone and collection layouts. These are specific tested cases, not a guarantee about all inputs. The test source was reviewed for this guide and the integration suite was run for this update. Sources: [tests/Test-Validator.ps1:236-317](../../../tests/Test-Validator.ps1), single-guide export cases; [tests/Test-Validator.ps1:421-468](../../../tests/Test-Validator.ps1), collection cases; [tests/Test-Validator.ps1:137-139](../../../tests/Test-Validator.ps1), standalone root guide; [tests/Test-Validator.ps1:422-424](../../../tests/Test-Validator.ps1), collection root guide.
 
 ## Related pages
 

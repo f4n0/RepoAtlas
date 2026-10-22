@@ -59,3 +59,20 @@ The initial collection validator returned exit 0: one audience and general index
 - Final snapshot rechecked: revision unchanged, git status shows only nine new files under docs/wiki. No application source or existing project instructions were modified.
 - Completed scope: home plus four flat task pages, each reachable from home and each topic linked to its home/parent. No section folders, architecture diagrams, or implementation excerpts are needed for these reader tasks.
 - Finalization timestamp: 2026-10-06T14:47:24Z. Manifest records factual review, structural validation, and diagram scan separately. No required research remains; example workflows, integration suite, and HTML/browser execution remain explicitly unverified optional coverage.
+
+## Update checkpoint — root SKILL.md interrogation guide
+
+- Source checkout at update: C:/_Data/GitHub/RepoAtlas (the earlier path above is the historical checkout name).
+- Git revision: 3f3d6e2e192951ee08ad5b25de6d81aff9bc9e69. Working tree modified by the toolkit feature changes and this collection update.
+- Requested audience: end-users, English, standard depth. Scope expanded within the existing audience to cover AI-assisted retrieval; no new audience was registered.
+- Excluded from research: the generated collection itself; repository implementation beyond the prompt, validator, exporter, and test behaviors needed for the update.
+
+| Changed source or capability | Verified change and evidence | Affected page/section | Planned edit or evidence refresh |
+| --- | --- | --- | --- |
+| Root `SKILL.md` artifact | prompts/repo-wiki.md:61-75, 256-258, 269, 298, 302; scripts/Test-RepoWiki.ps1:184-190; tests/Test-Validator.ps1:137-139, 422-424 | getting-started, manage-guides, validation-and-recovery, browser-export, homes | Document generation, location, non-page status, refresh/migration rules, manual review, and HTML-export omission |
+| Validator companion exemption | scripts/Test-RepoWiki.ps1:184-190; tests/Test-Validator.ps1:137-139, 422-424 | validation-and-recovery, home | Record that the root guide is not a manifest page and that both layouts are tested |
+| Collection root guide | docs/wiki/SKILL.md; current manifests | docs/wiki/README.md, docs/wiki/SKILL.md | Add inline-code pointer; build routing table, catalog, evidence rules, retrieval protocol, and limitations from finished pages |
+
+- Checks run for this update: selected-guide and collection validators (both passed), integration suite (153 assertions), optional diagram scan (no diagrams, no renderer). HTML export was not run.
+- The root `SKILL.md` was checked manually for relative links, page status, routes, source dependencies, snapshot, and limitations. The structural validator intentionally does not inspect it.
+- Finalization timestamp: 2026-10-22T09:23:21Z.

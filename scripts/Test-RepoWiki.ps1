@@ -5,7 +5,8 @@ Validates a Local Repo Wiki without network access or modifying files.
 .DESCRIPTION
 Checks simple inline Markdown links outside code examples, manifest coverage,
 navigation, and local source citations. Does not validate heading fragments,
-Mermaid, factual accuracy, or arbitrary Markdown extensions.
+Mermaid, factual accuracy, or arbitrary Markdown extensions. A root
+SKILL.md interrogation guide is not treated as a wiki page.
 #>
 [CmdletBinding()]
 param(
@@ -180,8 +181,11 @@ try {
         }
     }
     if ($homeCount -ne 1) { $errors.Add('Manifest must contain exactly one home page.') }
+    $skillGuide = Join-Path $wiki 'SKILL.md'
     foreach ($file in (Get-ChildItem -LiteralPath $wiki -Filter '*.md' -File -Recurse)) {
         if (Test-Within $file.FullName (Join-Path $wiki '.wiki')) { continue }
+        # The root interrogation guide is a generated companion, not a manifest page.
+        if ($file.FullName.Equals($skillGuide, $comparison)) { continue }
         if (-not $pages.ContainsKey($file.FullName)) { $errors.Add("Markdown page absent from manifest: $($file.FullName)") }
     }
 

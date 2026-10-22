@@ -7,7 +7,7 @@ These instructions are self-contained and tool-neutral. Use the assistant's avai
 ## Inputs and defaults
 
 - **Repository:** the user's specified local folder, otherwise the currently open repository. If multiple roots make this ambiguous, ask which to document.
-- **Output:** wiki collection root, `docs/wiki` under the repository unless specified otherwise. Resolve its absolute location before writing. Each audience has a subfolder and its own manifest; the root has a general index.
+- **Output:** wiki collection root, `docs/wiki` under the repository unless specified otherwise. Resolve its absolute location before writing. Each audience has a subfolder and its own manifest; the root has a general index and an LLM interrogation guide (`SKILL.md`).
 - **Language:** English unless specified.
 - **Audience:** new contributors for a new collection unless specified. For an existing audience folder, retain its recorded audience unless asked to change it. If an existing collection has several guides and the requested audience is ambiguous, ask which to update.
 - **Audience ID:** stable lowercase kebab-case folder identifier, separate from the display name. Use `contributors` for new contributors and `end-users` for end users. Reuse registered IDs; do not create duplicate guides for aliases, capitalization, or translated display names. Resolve ambiguous matches before writing.
@@ -25,6 +25,7 @@ Resolve the audience before research or editing. In the phases below, `<wiki-roo
 ```text
 docs/wiki/
   README.md
+  SKILL.md
   .wiki/audiences.json
   contributors/
     README.md
@@ -55,7 +56,23 @@ Require a nonempty title, language, and audience list. Each ID matches `^[a-z0-9
 
 Register only the requested audience unless several were explicitly requested. Preserve existing registry entries, manual index edits, unfamiliar files, and all other audience pages and manifests. Refresh the general index after creating or updating a guide. Link each audience home back to `../README.md` as "All audiences"; within a guide, Home and Parent links still target its own indexes. Cross-audience navigation goes through the general index and is not evidence for a guide's implementation claims. Exclude the entire generated collection from source research, not just the selected audience folder.
 
-For a legacy wiki with `<wiki-root>/.wiki/manifest.json`, retain its existing layout when updating the same audience. If a different audience or collection conversion is requested, explain the migration and obtain permission before moving existing pages or replacing the root index. Never silently move the old wiki, overwrite it for another audience, or mix the two root metadata formats. An authorized migration must rebase source/navigation links and `repository.relativeRoot`, preserve manual edits and unfamiliar files, and validate the relocated guide.
+For a legacy wiki with `<wiki-root>/.wiki/manifest.json`, retain its existing layout when updating the same audience. If a different audience or collection conversion is requested, explain the migration and obtain permission before moving existing pages or replacing the root index. Never silently move the old wiki, overwrite it for another audience, or mix the two root metadata formats. An authorized migration must rebase source/navigation links and `repository.relativeRoot`, preserve manual edits and unfamiliar files, and validate the relocated guide. Move or recreate `SKILL.md` at the new collection root; do not leave a duplicate inside an audience folder.
+
+## LLM interrogation guide (SKILL.md)
+
+Create `<wiki-root>/SKILL.md` as a compact, machine-oriented companion to the generated wiki. It lets an AI assistant answer questions about the documented repository quickly and precisely: which audience and page to read, which terms or symbols to search for, how to verify a claim against the cited source, and when to admit that the wiki does not cover the question. It is a companion artifact, not a wiki page: do not list it in an audience manifest or the collection registry. For a retained legacy single-wiki layout, `<wiki-root>` is that existing wiki root, so the guide sits beside its `README.md`. Write it in the configured language. Mention its path in the general index, and in a legacy single-wiki home page, as inline code so an assistant can find it without treating it as a page link.
+
+Build the guide after the pages and manifests exist, from their actual titles, paths, and source dependencies, not from the plan. Keep it dense and skimmable because an assistant reads it with limited context; it must route to content instead of repeating it. Include:
+
+- Purpose, documented snapshot (revision and working-tree state; per audience when they differ), language, and scope boundaries, including what is deliberately not covered.
+- Audience discovery: each registered audience ID, title, home page, reader tasks, and completion state. For a single-wiki layout, identify the one guide.
+- A question routing table as the primary lookup: likely reader questions, the exact page or pages to read in order, and exact terms, symbols, configuration keys, CLI flags, file names, or error text to search. Cover documented capabilities, workflows, configuration, failure handling, and change points, and word questions as a user would ask them.
+- A page catalog: one row or line per page in each audience manifest with its path (linked when the page exists), title, questions it answers, key symbols or settings, status, and repository-relative source dependencies. Mark incomplete, stale, or unvalidated pages and their limitations. A small wiki may combine the catalog and routing table.
+- Evidence conventions: how citations and relative links work, that line labels may not be clickable in every viewer, and that the wiki describes the recorded snapshot rather than the current working tree.
+- A short retrieval protocol: match the question to the routing table, use the listed terms to search the wiki or repository, read only the routed pages, confirm the answer against their source citations, report the page and source used, prefer current repository source over a conflicting wiki statement, and report missing coverage instead of guessing. If no route matches, fall back to the catalog and general index rather than reading every page. Add one or two real question-to-answer examples.
+- Known limitations and validation status affecting confidence. Never claim complete coverage or factual verification that was not performed.
+
+Use one H1 and plain Markdown with ordinary relative links so any assistant can read the guide without a special loader. Verify every page link. Do not cite the guide itself as repository evidence. For planned or in-progress pages, say they are unfinished and point to the covered sources instead of inventing an answer. Refresh the guide when pages, titles, audience routes, or material limitations change; create it during an update if an existing wiki lacks one.
 
 ## Working rules
 
@@ -63,7 +80,7 @@ For a legacy wiki with `<wiki-root>/.wiki/manifest.json`, retain its existing la
 2. Distinguish implemented behavior, intended behavior described in existing docs, and your own suggestions. Resolve disagreements using code; explicitly note unresolved disagreements.
 3. Cite significant implementation claims: public interfaces, defaults and configuration precedence, state changes, failure handling, system boundaries, diagram relationships, and setup commands. Cite only files actually read, with real line ranges where available. There is no minimum number of source files or citations per page.
 4. Do not invent APIs, defaults, features, deployment requirements, successful test runs, or performance guarantees. Describe important uncertainty precisely, without filling gaps with generic assumptions.
-5. Do not modify application source or existing project instructions. Write only the selected audience documentation and metadata, plus the collection's general index and registry. Preserve unfamiliar files and manual edits. If an existing output has no generation metadata, inspect it and ask before replacing conflicting content.
+5. Do not modify application source or existing project instructions. Write only the selected audience documentation and metadata, plus the collection's general index, registry, and interrogation guide. Preserve unfamiliar files and manual edits. If an existing output has no generation metadata, inspect it and ask before replacing conflicting content.
 6. Exclude `.git`, dependency folders (`node_modules`, virtual environments, vendored packages unless in scope), build products, generated wiki output, caches, binaries, and large datasets by default. Read lockfiles selectively for dependency facts, not as primary architecture evidence. Do not copy secrets, private keys, credential values, or populated environment files into documentation; explain variable names from safe examples or configuration code.
 7. Keep topics cohesive and navigation shallow. Prefer stable lowercase kebab-case page names, `README.md` indexes, and ordinary Markdown. Avoid redundant summaries and empty sections.
 8. Research related files in small batches. Do not dump the entire repository into one context. Persist findings and progress as described below so work can resume.
@@ -236,6 +253,10 @@ Do not include sensitive values in excerpts or examples. Omit irrelevant boilerp
 
 For optional syntax/render checking, use an already-installed local Mermaid parser/renderer or the intended viewer. If `scripts/Test-RepoWikiDiagrams.ps1` is available, PowerShell 7+ and a local Mermaid CLI (`mmdc`) are installed, run it with explicit `-WikiPath` and `-MermaidCliPath`; do not install dependencies to satisfy this check. Record the tool/viewer used, the diagrams checked, and failures or unavailable checks in `validation`. Keep diagrams with prose fallbacks when no renderer is available; do not claim syntax validation passed based on regex or mental inspection.
 
+### Interrogation guide
+
+After the pages, indexes, and manifest are written, create `<wiki-root>/SKILL.md` as specified in "LLM interrogation guide". Derive its routes and catalog from the finished pages and verified sources, and link only files that exist.
+
 ## Phase 4 — review and validate
 
 Before completion:
@@ -245,7 +266,7 @@ Before completion:
    - Audit diagrams node by node and edge by edge against the deciding sources. Check arrow direction, branch conditions, state transitions, cardinalities, and ordering/concurrency. Confirm that diagram and prose agree and that omitted behavior does not change the explanation. When a viewer is available, also inspect clipping, unreadable labels, and excessive density; successful parsing alone is not a readability check.
 2. Ensure every finished page is reachable from the home contents and, where applicable, a section index. Ensure each non-home page links home and each topic links its parent.
 3. Check that all local link destinations exist, that citation paths stay within the repository, and that explicit line ranges are within the referenced file.
-4. Check all planned pages are written and statuses reflect reality; remove empty sections, placeholders, broken citations, and repeated boilerplate.
+4. Check all planned pages are written and statuses reflect reality; remove empty sections, placeholders, broken citations, and repeated boilerplate. Check that the interrogation guide's routing table, catalog, and links match the finished pages and manifests.
    - Separately review usefulness for the intended reader: can they follow the main tasks, understand the central mechanism, and locate relevant change points or recovery steps? Fix missing prerequisites, unexplained terms, and distracting implementation detail. Revisit planned diagram opportunities and add supported views where prose alone makes relationships or ordering difficult to follow.
 5. If the toolkit's `scripts/Test-RepoWiki.ps1` is available and PowerShell 7+ is installed, run it with explicit `-WikiPath` and `-RepoRoot`. It checks structure and references, not factual accuracy or heading fragments. Otherwise perform equivalent checks with available local tools and record exactly what was checked.
 6. Perform optional diagram rendering checks as described above. Unavailable optional tools are limitations, not evidence of failure; actual diagram failures must be repaired, replaced with an accurate prose explanation, or left as outstanding work.
@@ -253,7 +274,7 @@ Before completion:
 
 Validate the selected audience with `-WikiPath <output>` and the general index/registered guides with `-WikiPath <wiki-root>` when the collection is ready. Keep collection failures separate from the selected guide's validation; unrelated incomplete guides do not mean the selected guide is unfinished. Combined HTML export requires all registered guides to be complete; alternatively export a completed audience folder alone. The exporter does not generate or adapt the Markdown content.
 
-End with a short user-facing summary: general index and audience entry paths, scope, checks performed, and any remaining gaps. Never equate link validation with factual verification.
+End with a short user-facing summary: general index, audience entry, and interrogation guide paths, scope, checks performed, and any remaining gaps. Never equate link validation with factual verification.
 
 ## Updates and resuming
 
@@ -274,10 +295,11 @@ End with a short user-facing summary: general index and audience entry paths, sc
 - Refresh citation line ranges, all indexes, and source dependency lists. Re-evaluate excluded/new subsystems for scope.
 - Do not delete obsolete or unfamiliar pages automatically. Explain proposed removal or preserve them with an accurate note until the user authorizes removal.
 - In the final summary, report affected pages, the significant changes documented, evidence-only refreshes, checks performed, and remaining uncertainty. Do not claim unrelated pages were reviewed or unchanged files prove unaffected behavior.
+- Refresh `<wiki-root>/SKILL.md` when pages, titles, audience routes, or material limitations change, and create it from the current pages if an existing wiki lacks one. Keep its routes and catalog aligned with the manifests rather than leaving stale entries.
 
 ## Manifest contract (version 1)
 
-Use valid JSON without comments. This contract applies to one audience wiki, not the collection root. Paths in `pages[].path` are audience-output-relative with `/` separators. Paths in `pages[].sources` are repository-relative files actually read. No absolute paths are needed. `relativeRoot` locates the repository from the audience directory; the validator still requires an explicit repository argument. All timestamps are ISO 8601 UTC. Null revisions are legitimate for non-Git directories. The example assumes `<output>` is `docs/wiki/contributors`.
+Use valid JSON without comments. This contract applies to one audience wiki, not the collection root. The `<wiki-root>/SKILL.md` interrogation guide is a companion artifact: do not list it in `pages`. Paths in `pages[].path` are audience-output-relative with `/` separators. Paths in `pages[].sources` are repository-relative files actually read. No absolute paths are needed. `relativeRoot` locates the repository from the audience directory; the validator still requires an explicit repository argument. All timestamps are ISO 8601 UTC. Null revisions are legitimate for non-Git directories. The example assumes `<output>` is `docs/wiki/contributors`.
 
 ```json
 {

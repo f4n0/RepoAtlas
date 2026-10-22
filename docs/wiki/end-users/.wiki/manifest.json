@@ -2,11 +2,11 @@
     "schemaVersion": 1,
     "generator": "local-repo-wiki",
     "status": "complete",
-    "generatedAt": "2026-10-06T14:47:24Z",
+    "generatedAt": "2026-10-22T09:23:21Z",
     "repository": {
         "name": "RepoAtlas",
         "relativeRoot": "../../..",
-        "revision": "867d457d28fa743a55ce4f1a3509d921265a6857",
+        "revision": "3f3d6e2e192951ee08ad5b25de6d81aff9bc9e69",
         "workingTree": "modified"
     },
     "scope": {
@@ -18,7 +18,8 @@
             "request settings",
             "audience guides and updates",
             "validation and recovery",
-            "local HTML reading"
+            "local HTML reading",
+            "AI interrogation guide"
         ],
         "exclude": [
             "contributor implementation details",
@@ -94,24 +95,27 @@
     ],
     "limitations": [
         "Illustrative generation/update requests and commands with example repository paths were not executed as separate workflows.",
-        "Integration-test definitions were reviewed, but the integration suite and HTML export were not run for this documentation change.",
+        "The integration suite was run for this update; HTML export was not run or refreshed, so docs/wiki-html may predate this update.",
         "The guide contains no Mermaid diagrams. The optional checker found no blocks and invoked no renderer; mmdc was unavailable on PATH, so real Mermaid rendering was not verified.",
-        "Coverage is limited to end-user generation, settings, audience maintenance, validation/recovery, and local browser reading; implementation extension and model/renderer installation are excluded."
+        "The root SKILL.md is a companion artifact, not a manifest page. Its routes and links were checked manually; the structural validator does not inspect its content.",
+        "Coverage is limited to end-user generation, settings, audience maintenance, validation/recovery, local browser reading, and AI-assisted retrieval; implementation extension and model/renderer installation are excluded."
     ],
     "remainingWork": [],
     "validation": {
         "status": "passed",
         "checks": [
-            "Factual review: audited all five pages against the on-disk generation instructions, validator completion/navigation branches, exporter path/ownership/rendering/search/replacement branches, HTML reader labels and handlers, and relevant integration-test definitions.",
-            "Selected-guide structural validation: Test-RepoWiki.ps1 with explicit WikiPath docs/wiki/end-users and RepoRoot the local repository; checks metadata, page coverage, local links, home/parent navigation, source dependencies, and citation bounds.",
-            "Collection structural validation: Test-RepoWiki.ps1 with explicit WikiPath docs/wiki and RepoRoot the local repository; checks registry, general index, and the registered end-users guide separately from factual review.",
-            "Optional diagram scan: Test-RepoWikiDiagrams.ps1 with explicit WikiPath docs/wiki/end-users and MermaidCliPath mmdc; exit 0, No Mermaid diagrams found; no renderer invoked."
+            "Factual review: audited the home and four task pages against the updated generation instructions, the validator's root SKILL.md exemption, exporter page selection, and relevant integration-test definitions; checked the root SKILL.md routes, catalog, links, snapshot, and limitations against the finished pages and manifest.",
+            "Selected-guide structural validation: Test-RepoWiki.ps1 with explicit WikiPath docs/wiki/end-users and RepoRoot the local repository; passed with 5 pages and 5 source files, including citation bounds.",
+            "Collection structural validation: Test-RepoWiki.ps1 with explicit WikiPath docs/wiki and RepoRoot the local repository; passed with 1 audience and the general index.",
+            "Integration suite: pwsh -NoProfile -File tests/Test-Validator.ps1; passed 153 assertions, including root SKILL.md exemption in standalone and collection layouts.",
+            "Optional diagram scan: Test-RepoWikiDiagrams.ps1 with explicit WikiPath docs/wiki/end-users and MermaidCliPath mmdc; exit 0, No Mermaid diagrams found, no renderer invoked."
         ],
         "notes": [
-            "Checks used local PowerShell 7.6.6. No network requests, package installations, or source-code changes were made.",
-            "Two out-of-bounds draft citation endpoints were repaired and the selected-guide check rerun successfully before completion.",
-            "The initial working tree was clean. Final git status lists only the nine generated collection files; the source revision remains 867d457d28fa743a55ce4f1a3509d921265a6857.",
-            "Structural validation does not establish factual correctness, validate Mermaid syntax, or verify heading fragments. Diagram availability and factual review are recorded separately."
+            "Checks used local PowerShell 7.6.7. No network requests or package installations were made.",
+            "The snapshot revision is 3f3d6e2e192951ee08ad5b25de6d81aff9bc9e69 and the working tree is modified by the toolkit feature changes and this documentation update.",
+            "The root SKILL.md is a companion guide, not a manifest page; it was checked manually for link targets, routing accuracy, and consistency with the finished pages and manifest.",
+            "HTML export was not run or refreshed for this update; docs/wiki-html remains a previous reading copy.",
+            "Structural validation does not establish factual correctness, validate Mermaid syntax, verify heading fragments, or validate the SKILL.md routes. Diagram availability, factual review, and the guide check are recorded separately."
         ]
     }
 }
